@@ -1,5 +1,6 @@
 project:
   type: website
+  output-dir: docs
   execute-dir: file
 format:
    html:
@@ -7,7 +8,7 @@ format:
 name: "personal_website2"
 description: |
   This is my website
-output_dir: docs
+
 base_url: https://wittja01.github.io/website/
 website:
    title: "Jake Wittman"
