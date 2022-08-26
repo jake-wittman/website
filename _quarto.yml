@@ -1,0 +1,27 @@
+project:
+  type: website
+  execute-dir: file
+format:
+   html:
+      theme: vapor
+name: "personal_website2"
+description: |
+  This is my website
+output_dir: _site
+base_url: https://wittja01.github.io/personal_website/
+website:
+   title: "Jake Wittman"
+   navbar: 
+      right:
+          - text: "Home"
+            href: index.html
+          - text: "About"
+            href: about.html
+          - text: "Projects"
+            href: projects.html
+          - text: 'CV'
+            href: cv.html
+          - text: 'GitHub'
+            href: https://github.com/wittja01
+execute: 
+  freeze: auto

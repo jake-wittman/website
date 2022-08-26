@@ -1,0 +1,33 @@
+---
+title: "Projects"
+description: |
+  Here's a brief description of projects I've worked on with links to related GitHub repos or posts I've made describing them in more detail.
+---
+
+Please reach out to me if you are interested in copies of my academic papers. My contact information is available on my CV.
+
+## PhD projects
+
+After finishing my MSc, I stuck around at the University of Minnesota to complete a PhD in Forest Entomology with a graduate minor in Biostatistics. My PhD has focused on answering questions pertaining to the management of emerald ash borer, an invasive wood boring beetle in North America that is killing all of our ash trees.
+
+My first chapter focused on evaluating the cold tolerance of a parasitic wasp, *Spathius galinae*, that we use to control populations of emerald ash borer. Here's a [link to the paper](https://doi.org/10.1016/j.biocontrol.2021.104694). Code and data associated with this project are available on the [Data Repository of the University of Minnesta](https://conservancy.umn.edu/handle/11299/219452).
+
+My second chapter evaluated the attraction radius of a sex pheromone we use in traps for monitoring emerald ash borer populations. Link to the paper is [here](https://doi.org/10.1111/afe.12457) and to the repository with code and data [here](https://conservancy.umn.edu/handle/11299/219525).
+
+My third chapter focuses on identifying environmental factors that have contributed to variable spread rates of emerald ash borer. This is not yet published, so there is no paper or code available. I'll update it once it is!
+
+## Master's projects
+
+I did my MSc at the University of Minnesota in the Forest Entomology lab. The focus on my research was understanding the behavior of the invasive moth *Lymantria dispar* (formerly known as the gypsy moth, but this common name has been retired due to the negative connotations associated with the word "gypsy"). The code associated with my two thesis chapters can be found on my GitHub [here](https://github.com/wittja01/buffer_zone_project) and [here](https://github.com/wittja01/servosphere_project). There are also plain language summaries in the README for each project, as well as links to the paper. Please reach out if you would like a copy of either of these papers. Be warned if you look at the code: I was brand new to R and programming in general! It is probably kind of a mess.
+
+## Hobby projects
+
+### Runnr
+
+I love to run. I came to it a little bit later in life than some - it wasn't until my senior of college that I began to run with any consistency. Now, almost exactly 10 years after I started running regularly, I've run several marathons and ultramarathons. One thing I love about running is the potential to collect lots of data about the activity! I started keeping a running log 10 years ago. I would track my mileage (using Google Earth to determine how far I went before I owned a GPS watch) and times. I've since expanded my data to record my average heart rate, the type of run it was, and the shoes I ran in. I created the [Runnr Shiny app](https://jake-wittman.shinyapps.io/running_dashboard/) as a way to visualize some of that data. Like all my hobby projects, it isn't very polished but it does what I want. I use it to get a general gauge of how my training is going, track the mileage on my shoes to know when I need to replace them, and just reflect on the miles I've put in over the years!
+
+### Scraping the World of Warcraft auction house
+
+In my free time, I enjoy playing a little World of Warcraft. In this game, there is an auction house where players can buy and sell in-game items with in-game currency. There is a lot of in-game gold to be made by playing the auction house (and even whole communities that focus mainly on making gold as their main form of playing the game). The game publisher, Blizzard, has an API set up for people to download data on all the auctions on a given server's auction house available every hour. While other websites collate this data for economically minded players to take advantage of, I wanted to be able to explore the data more in-depth so I set about learning how to use the API. The code for this project is [on my GitHub](https://github.com/wittja01/WoWAH). World of Warcraft uses a subscription model, so it costs me \$15/month to play but Blizzard makes it possible to use in-game gold to buy game time. I use this data to help my gold making operations so I don't have to pay real money to play this game.
+
+This is currently a work in progress. Right now, I use a combination of R and Python to scrape and munge the data from the API and then write it to a local database. I also have set up email alerts for certain items I'm interested in so I can be notified when they drop below a certain price. Eventually I want to set this up to run automatically using something like GitHub Actions so I don't have to leave my personal PC on all the time. I also would like to set up a Shiny app for visualizing pricing data. I'm also in the process of using this data to learn more about time series analysis, so you'll see some .Rmd files in this repository where I'm working through code from Hyndman and Athanasopulos' "Forecasting: Principles and Practice". Check out the blog portion of the website for some posts describing this project in more detail!

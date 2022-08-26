@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.1.113">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2022-01-12">
+<meta name="description" content="I fed a bunch of caterpillars different types of food to see how it would affect their movement">
+
+<title>Jake Wittman - Even caterpillars are what they eat</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: 1;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-fixed fullcontent">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Jake Wittman</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../index.html">Home</a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html">About</a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../projects.html">Projects</a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../cv.html">CV</a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="https://github.com/wittja01">GitHub</a>
+  </li>  
+</ul>
+              <div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Even caterpillars are what they eat</h1>
+</div>
+
+<div>
+  <div class="description">
+    I fed a bunch of caterpillars different types of food to see how it would affect their movement
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p> </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">January 12, 2022</p>
+    </div>
+  </div>
+    
+  </div>
+  
+
+</header>
+
+<!----
+Use 
+refinery::use_article_template(
+    template = "_templates/standard_template.Rmd",
+    slug = "how-cold-is-too-cold", 
+    date = "2022-01-11",
+    renv_new = TRUE
+)
+to generate new post
+
+checklist:
+  - check the "update me" messages in YAML above
+  - initialise the _renv folder with refinery::renv_new("name of post folder")
+  - populate the lockfile with refinery::renv_snapshot("name of post folder")
+  - update the _renv folder from snapshot with refinery::restore("name of post folder")
+
+---->
+<!--------------- setup post ----------------->
+<!--------------- post ----------------->
+<p><strong>Tl;dr: The food that caterpillars eat can affect their movement behavior, possibly due to the nutrition differences.</strong></p>
+<p>For my Master’s, I spent far too much time working with an invasive caterpillar <em>Lymantria dispar</em> (this caterpillar may be familiar to those of you from the eastern US under a different common name, but in 2021 the common name has been dropped due to the negative connotations it carried for some eastern European peoples. I won’t be using it except when it’s [unfortunately] included in a citation). I reared a bunch of these little guys in the lab for my experiments and it was such a pain.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="ld.jpg" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">A <em>Lymantria dispar</em> caterpillar. The caterpillars are quite pretty (the adults are just boring brown/white moths), but I wouldn’t pick them up. Those hairs are what we call ‘urticating hairs’ and they can be quite irritating. They’re not deadly like some caterpillars, but they may cause a skin reaction or worse if you’re allergic. Photo from Washington State Department of Agriculture.</figcaption><p></p>
+</figure>
+</div>
+<p>First, they cannibalize each other even when food is available. Second, they are extremely susceptible to some kind of mold when grown in the lab. No amount of sanitation (of myself, the housing, the food) seemed to help contain it. I would have to rear about 500 at a time if I wanted 100 to use in experiments. And they smelled awful! By the time I was done with my thesis, I never wanted to look at another <em>L. dispar</em> caterpillar. Since then though, I’ve come around on them. They’re a unique insect in the world of invasive species because we know when and where they were introduced, and they’ve been studied to death as a model invasive insect. You can read all about the introduction of this insect in the 1896 tome “The Gypsy Moth <em>Porthetria dispar</em>” (the genus of this species has since changed). I’ll tell you some of the more interesting bits here though.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="diet.jpg" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">Two <em>L. dispar</em> caterpillars eating some of the artifical diet we feed them, and their poop pellets.</figcaption><p></p>
+</figure>
+</div>
+<p>Etienne Trouvelot brought these insects over from France (<em>L. dispar</em> is native to Europe and Asia) to Medford, MA around 1869. Etienne was a naturalist, astronomer, and artist and at the time, was interested in producing a more hearty breed of silk worm. You see, silks worms are pretty but they’re very picky and incredibly hard to rear. <em>Lymantria dispar</em>, on the other hand, will eat just about anything you give it and (despite my experiences with it), much easier to rear while also producing their own silk! Etienne was hoping to cross-breed these two caterpillars. He apparently was not aware that they’re two very different species and cross-breeding would not be successful. Regardless, one day the <em>L. dispar</em> caterpillars he was keeping got loose! This part of the story is less certain - was it a thunderstorm that knocked open the enclosures? Did they escape some other way? but no matter what they got out.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="jupiter.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">One of Etienne Trouvelot’s astronomy paintings. His artwork is quite nice - a friend of mine got me several prints of his work as a gift when I finished my Masters</figcaption><p></p>
+</figure>
+</div>
+<p>To Etienne’s credit, he immediately tried to recover them. He tried enlisting members of the town to help him, but at the time the concept of an invasive species didn’t really exist and no one bothered to help. Within the next decade, their populations grew out of control! There are quotes in the aforementioned 1896 publication of people gathering them by the bucket full in the morning, finding them in their closets, or being able to hear their frass (poop) raining down from trees on the roofs of their house. At this point, it was too late to control them and their populations began to grow and spread. Their egg masses are small and brown and easily hidden on firewood or on the underside of cars (or that far back in time, carriages), so they’re often inadvertently transported around which contributes to their spread.</p>
+<p>These insects are prolific feeders and they feed on virtually all species of deciduous trees in the eastern US and even a few species of conifers. The extensive defoliation they cause during outbreaks won’t often kill trees, but repeated defoliation year after year will weaken trees and expose them to secondary mortality agents. They’re also gross when they outbreak - they get EVERYWHERE. And as the hairs on their bodies can be irritating to humans and pets, so they’re a bit of a health hazard too. Plus, it’s not fun having trees without any leaves in your neighborhood during outbreaks.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="bucket_of_ld.jpg" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">A bucket of <em>L. dispar</em> caterpillars collected in Indiana. Photo from Purdue Entomology Extension</figcaption><p></p>
+</figure>
+</div>
+<p>The US federal government has maintained a quarantine for this insect and has regulations in place to limit it’s movement because of the costs associated with it’s defoliation. Without getting into the weeds, my Master’s research focused on evaluating the movement potential and behavior of these caterpillars because we needed to understand how far they could crawl to ensure regulatory practices were appropriate, which brings me to the topic of this post.</p>
+<p>For one of my thesis chapters, I studied the effect of different food sources on the movement of <em>L. dispar</em> caterpillars. One regulatory practice in the wood processing industry required that wood be stored at least 100 feet away from any standing trees, on the assumption that this would be far enough that caterpillars and adults wouldn’t find their way to the wood and lay eggs on it. However, there’s very little research (i.e.&nbsp;none) that supported this number. We wanted to get some baseline data on the movement of the caterpillars and their behavior. The type and quantity of food can have a large impact on the movement capabilities and behavior of insects. Given how many different types of plants <em>L. dispar</em> has been shown to eat, we wanted to see if preferred hosts and non-preferred hosts caused different movement behaviors.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="ld_damage_satellite.jpg" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">In the summer of 2016, parts of New England had a significant <em>L. dispar</em> outbreak. This image from the Nasa Earth Observatory picks up the defoliation damage.</figcaption><p></p>
+</figure>
+</div>
+<p>These experiments were all conducted in the lab to give us a real controlled environment. Now, you may be wondering, how did we study the movement of an insect in a lab based environment? We used a servosphere! This futuristic sounding device is a ball situated atop three orthogonal motors. A camera pointed at the top of the ball watches an insect as it crawls around on top and it signals to the motors to rotate the ball so that the insect is kept in position at the apex of the ball. Essentially, it’s a treadmill but for insects!</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="servo_cockroach.gif" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">One of our cockroach pets demonstrating the servosphere</figcaption><p></p>
+</figure>
+</div>
+<p>We fed our caterpillars 5 different foods: Bur oak, eastern larch, Norway maple, silver maple, and the artificial diet commonly used to raise them in the lab. We chose these foods as they cover a range of what are considered preferred, with bur oak and eastern larch being listed as preferred, Norway maple being somewhat preferred, and silver maple rarely being attacked. Because these insects are used often in lab studies, we also wanted to know how the artificial diet may be affecting their behavior. The caterpillars were further split into three feeding regimes where they were starved for 0, 24, or 48 hours prior to being placed on the servosphere. We know food deprivation can increase the movement of other insects and we wanted to understand how their movement might change once they’ve consumed all the food in an area.</p>
+<p>So we but a bunch of caterpillars on the servosphere and recorded their movement for 10 minutes (after a 5 minute acclimation period). Somewhat surprisingly, when the larvae were not starved, they tended not to move. (You’ll notice silver maple is missing from these graphs - the caterpillars refused to eat it and all died).The longer they had gone without food though, the more likely they were to move. Except larch. Those fed larch were moving all the time.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="pr_move.jpg" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">The probability that a caterpillar would move more than 10 centimeters. Any caterpillar that didn’t move more than 10 centimeters during the 10 minute observation period was considered a non-mover. Lines are the fitted values for a logistic regression model with food deprivation period as the input variable. Dashed lines represent non-significant slopes, while shaded grey areas are the 95% confidence intervals.</figcaption><p></p>
+</figure>
+</div>
+<p>The caterpillars fed larch always moved, but they actually moved less distance the longer they were starved. In contrast, the larvae we fed on oak increased how far they moved (and there was more variance in how far they moved), as did those fed on artificial diet.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="distance_moved.jpg" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">The total distance moved by caterpillars deprvied of food for different periods of time.</figcaption><p></p>
+</figure>
+</div>
+<p>So, we feel that our results show that larvae feeding on what are considered preferred hosts tend to move further as starvation increases. One possible explanation is that these hosts (bur oak) are preferred for a reason: they’re more nutritious/the insects can access more of the nutrition. So when they are eating it (not starved) they’re content and just hang out. When they have eaten it and then are deprived of it, they’re in a better state physiologically to equip them to move further.</p>
+<p>The results from the caterpillars fed on larch stood out to us. It is listed as a susceptible (i.e.&nbsp;preferred) host in the literature, which makes it unique among conifers. Most conifers are not susceptible at all to European <em>L. dispar</em> (Asian <em>L. dispar</em> is another story, and it’s own subspecies). While the larvae did eat the larch, it seems to change their movement behavior, especially compared to bur oak. This is likely also tied back to the nutrition of the tree itself and suggests that, while <em>L. dispar</em> will eat it, it’s definitely not the best food for them.</p>
+<p>So, this study didn’t give us any groundbreaking discoveries but it gave us a starting place with which we could evalute some of the regulatory practices (the focus of my other chapter).</p>
+
+
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

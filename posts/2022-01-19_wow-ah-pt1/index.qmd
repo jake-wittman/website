@@ -1,0 +1,268 @@
+---
+title: "Download data from the World of Warcraft auction house REDUX" # <---- UPDATE ME
+description:
+  To learn a bit more Python and make my scraping more reliable, I rewrote my scraping and database building scripts in Python. # <---- UPDATE ME
+author:
+  - first_name: "Jake"
+    last_name: "Wittman"
+    url: https://wittja01.github.io/website/
+date: 2022-01-19
+image: app_preview.jpg  # <---- UPDATE ME 
+license: CC BY
+citation_url: https://wittja01.github.io/website/wow-ah-pt1 
+repository_url: https://github.com/wittja01/website
+params:
+  slug: wow-ah-pt1
+  date: 2022-01-19
+  repo: wittja01/personal_website
+  site: https://wittja01.github.io/personal_website
+---
+
+<!----
+Use 
+refinery::use_article_template(
+    template = "_templates/standard_template.Rmd",
+    slug = "how-cold-is-too-cold", 
+    date = "2022-01-11",
+    renv_new = TRUE
+)
+to generate new post
+
+checklist:
+  - check the "update me" messages in YAML above
+  - initialise the _renv folder with refinery::renv_new("name of post folder")
+  - populate the lockfile with refinery::renv_snapshot("name of post folder")
+  - update the _renv folder from snapshot with refinery::restore("name of post folder")
+
+---->
+
+
+<!--------------- setup post ----------------->
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+<!--------------- post ----------------->
+
+In [this post](https://wittja01.github.io/website/posts/2021-12-03_time-is-money-friend/) I described how I wrote some Python and R code to scrape the WoW auction house API to get auction data. The code felt kind of fragile though. Changes in one part of the script would cause more cascades through the code than I was comfortable with (maybe it's because of my programming skills moreso than trying to combine two languages), so I wanted to rewrite into one language to try and avoid that. I decided on Python because I wanted to get more comfortable using it, and using Pandas, so I rewrote the whole process of downloading the data, cleaning it, and building the database in Python. I'll walk through that code here, and then in a future post I'll talk about the R Shiny app I built using this data.
+
+The first of my scripts pulls the auction house data from the Blizzard API hourly. I use a config file to store my API keys for both the dropbox API and Blizzard API. I wrote a couple functions to pull the data from the Blizzard API using information specific to the server I play on. You could repurpose this code for your own server, but you'd need to update the `id` variable for your server.
+
+```{python, eval = FALSE}
+#########
+# This script uses access tokens for dropbox and Blizzard API keys to scrape
+# data from the WoW auction house and upload the csv to drop box.
+# The pull_data.py script will pull the data from dropbox, delete it once pulled
+# and add it to the database. 
+#########
+import requests
+import os
+from datetime import datetime
+import pandas as pd
+import dropbox
+from decouple import config
+
+DROPBOX_ACCESS = config('DROPBOX_ACCESS')
+dbx = dropbox.Dropbox(DROPBOX_ACCESS)
+
+# Create access toeken
+def create_access_token(client_id, client_secret, region = "us"):
+   data = { 'grant_type': 'client_credentials' }
+   response = requests.post('https://%s.battle.net/oauth/token' % region,
+                            data = data,
+                            auth = (client_id, client_secret))
+   return response.json()
+
+# Get Malf and connected realms data
+def get_malfurion(search):
+   search = search
+   response = requests.get(search)
+   return response.json()["auctions"]
+
+CLIENT_ID_WOW = config('CLIENT_ID_WOW')
+CLIENT_SECRET_WOW = config('CLIENT_SECRET_WOW')
+response = create_access_token(CLIENT_ID_WOW, CLIENT_SECRET_WOW)
+token = response['access_token']
+
+# ID for NA-Malfurion server
+id = 1175
+search = f"https://us.api.blizzard.com/data/wow/connected-realm/{id}/auctions?namespace=dynamic-us&locale=en_US&access_token={token}"
+
+# Get Data
+auction_data = get_malfurion(search)
+```
+
+Next steps are to clean the data. We take the JSON file and turn it into a Pandas dataframe. I rename some of the columns, expand others, and fill in NA values. There are two variables that represent how much an auction is posted for: `buyout` and `unit_price`. In game, some items are "stackable", like potions. You can stack 20 of them in one inventory spot. Other items are not stackable, like armor. A pair of boots occupies a single inventory space and cannot stack. The buyout price is what is used for unstackable items, like boots, and the unit_price is the cost of a stackable item. The distinction isn't really important for my purposes, so I combine them into a single `cost` column and then convert that to cost in gold. I also add some datetime columns for future use in modeling. I could do this more efficiently and just have a single datetime column from which I could derive the others, but right now storage space isn't a concern. At the end of the cleaning, I write the dataframe to a csv file.
+
+```{python, eval = FALSE}
+# Convert data to a dataframe
+auction_data = pd.DataFrame(auction_data)
+
+auction_data = auction_data.rename(columns={"id": "auction_id",})
+# Expand the item column
+auction_data = pd.concat([auction_data.drop(['item'], axis=1), auction_data['item'].apply(pd.Series)], axis=1)
+auction_data['id'] = auction_data['id'].map(int).map(str) # Convert to int to remove trailing 0, then to string
+# Unit prices are for stackable items, buyout is for unstackable. I just want a single gold cost column
+auction_data['buyout'] = auction_data['buyout'].fillna(0)
+auction_data['unit_price'] = auction_data['unit_price'].fillna(0)
+auction_data['cost'] = auction_data['buyout'] + auction_data['unit_price']
+# Cost is in copper, convert to gold
+auction_data['cost_g'] = auction_data['cost'] / 10000
+# Remove rows for pets. I don't care about pets
+# And remove columns about pets
+is_pet_mask = auction_data['pet_breed_id'].isna()
+auction_data = auction_data[is_pet_mask]
+auction_data.drop(columns = ['pet_breed_id', 'pet_level', 'pet_quality_id', 'pet_species_id'], inplace = True)
+
+#   These are subgroups of an equipable item with the bonus stats (intellect agility, strength, etc)
+# Make one date time column and also 4 columns for each relevant piece
+auction_data['date_time'] = datetime.now()
+auction_data['collection_year'] = datetime.now().strftime('%Y')
+auction_data['collection_month'] = datetime.now().strftime('%m')
+auction_data['collection_day'] = datetime.now().strftime('%d')
+auction_data['collection_hour'] = datetime.now().strftime('%H')
+filename = datetime.now().strftime('Malfurion_NA-%Y-%m-%d-%H-%M.csv')
+```
+
+Here, I upload the csv file to Dropbox and delete the csv file locally. I do this because eventually I want to migrate this script to something like a Raspberry Pi so I can have it constantly run. Right now it's running constantly on my personal PC, and I don't want to do that forever. I want to be able to turn on my PC and have it scrape what's been collected in Dropbox since the last time. I tried automating this with Github Actions, but found that Github Actions would not run every hour (at least, not for a free plan). You can *ask* it to run hourly, but depending on demand it may or may not. I was getting some scrapes occurring within 20 minutes of each other and others hours apart, which isn't useful for an API that is updated hourly.
+
+```{python, eval = FALSE}
+dropbox_filename = "/" + filename
+auction_data.to_csv(filename, index = False)
+
+with open(filename, 'rb') as f:
+   dbx.files_upload(f.read(), dropbox_filename)
+
+os.remove(filename)
+
+```
+
+I use Windows Task Scheduler to run the above code ever hour on the hour. Then I have a script that pulls the data from Dropbox and places it into a SQLite database, which I'll detail below. At this point, it's overkill (why repull the data I already had?) but like I said earlier, I eventually want to migrate the first script to a different computer.
+
+Again, I need the config file to get the Dropbox API keys. Figuring out how to download from Dropbox was a bit of a pain in the ass. The documentation isn't great for a beginner, but after some extensive googling I think I figured it out. 
+
+```{python, eval = FALSE}
+############
+# This script pulls WoW AH data from my dropbox to my machine, where
+# I'm building a database of this data. 
+############
+import os
+from datetime import datetime
+import pandas as pd
+import dropbox
+from decouple import config
+import pandas
+import sqlite3
+DROPBOX_ACCESS = config('DROPBOX_ACCESS')
+dbx = dropbox.Dropbox(DROPBOX_ACCESS)
+# Had some issues with this script. The only workaround I could find
+# was to specify the full directory path.
+main_dir = 'F:/Documents/WoWAH_py/WoWAH_python/'
+# Download csvs from dropbox
+# These go in the temp_csvs folder until they're added to the databse
+# then they're deleted
+db_files = dbx.files_list_folder("")
+for i in db_files.entries:
+    with open(main_dir + 'data/temp_csvs/'+ i.name, "wb") as f:
+        metadata, res = dbx.files_download(i.path_lower)
+        f.write(res.content)
+```
+
+Now, I connect to the local database and append the hourly data to the existing auctions table. This should also work if the auctions table doesn't exist already; it'll generate it the first time this is run. Then I delete the csv files from Dropbox, since I have a free plan and don't have unlimited space.
+
+```{python, eval = FALSE}
+# Connect to database and add csvs
+conn = sqlite3.connect(main_dir + 'data/WoWAH_db.sqlite')
+
+ah_csvs = os.listdir(main_dir + 'data/temp_csvs')
+curs = conn.cursor() # Create cursor w/e that is
+
+for i in ah_csvs:
+    temp_file = pandas.read_csv(main_dir + 'data/temp_csvs/' + i)
+    temp_file['id'] = temp_file['id'].map(str)
+    temp_file['date_time'] = pd.to_datetime(temp_file['date_time'])
+    temp_file.to_sql('auctions', conn, if_exists='append', index = False)
+
+# Once files are in the database, go ahead and delete from dropbox
+for i in db_files.entries:
+    dbx.files_delete("/" + i.name)
+
+# And delete  csvs
+for i in ah_csvs:
+    os.remove(main_dir + 'data/temp_csvs/' + i)
+```
+
+This last step queries the database to get the most recent 4 weeks of data and writes it to a csv, which is used locally by a Shiny app I've built. One thing to note is that when I pull the auction data, I don't get the name of the items up for auction. Instead the items all have an id number. I have to use that number in an additional API call to get the item name and other information about the items. So in a later post, I'll detail how I use unique item ids from the auctions table to build an item table in the database, update that table as new, not-seen-before items show up in the auctions table. You can see that I use a left join to bring over relevant columns from the item_id table.
+
+You can find a demo of this app [here](https://jake-wittman.shinyapps.io/wowah_app/). The demo uses a subset of old data, since I'm limited to a free plan with only so much storage. Eventually I'll update it to deploy a subset of new data ever hour, but that's for a later time!
+
+```{python, eval = FALSE}
+# Write a csv to file that contains the most recent 2 (4?) weeks of data
+query = curs.execute("""
+    SELECT auctions.auction_id,
+        auctions.quantity,
+        auctions.time_left,
+        auctions.date_time,
+        auctions.cost_g,
+        item_id.name,
+        item_id.is_stackable,
+        item_id.is_equippable
+    FROM auctions
+    LEFT JOIN item_id ON auctions.id = item_id.id
+    WHERE date_time BETWEEN datetime('now', '-1 month') and datetime('now', 'localtime')
+    """)
+cols = [column[0] for column in query.description]
+results = pd.DataFrame.from_records(data = query.fetchall(), columns = cols)
+results.to_csv(main_dir + '/data/latest_month_auctions.csv', index = False)
+# Write a smaller version of the data to upload with the app as a test
+query = curs.execute("""
+    SELECT auctions.auction_id,
+        auctions.quantity,
+        auctions.time_left,
+        auctions.date_time,
+        auctions.cost_g,
+        item_id.name,
+        item_id.is_stackable,
+        item_id.is_equippable
+    FROM auctions
+    LEFT JOIN item_id ON auctions.id = item_id.id
+    WHERE date_time BETWEEN datetime('now', '-1 month') and datetime('now', 'localtime')
+    AND name IN ('Rising Glory',
+            'Widowbloom',
+            'Marrowroot',
+            "Vigil's Torch",
+            'Death Blossom',
+            'Nightshade',
+            'Laestrite Ore',
+            'Elethium Ore',
+            'Solenium Ore',
+            'Oxxein Ore',
+            'Phaedrum Ore',
+            'Sinvyr Ore',
+            'Angerseye',
+            'Oriblase',
+            'Umbryl',
+            'Desolate Leather',
+            'Callous Hide',
+            'Pallid Bone',
+            'Gaunt Sinew',
+            'Heavy Desolate Leather',
+            'Heavy Callous Hide',
+            'Shrouded Cloth',
+            'Lightless Silk',
+            'Soul Dust',
+            'Sacred Shard',
+            'Eternal Crystal')
+    """)
+cols = [column[0] for column in query.description]
+results = pd.DataFrame.from_records(data = query.fetchall(), columns = cols)
+results.to_csv(main_dir + 'wowah_app/app_data/latest_month_auctions.csv', index = False)
+
+conn.close()
+
+```
+
+So this details my automated workflow to pull WoW AH data with Python. It's set up so I can eventually migrate it to a different computer, so it's got some redundancies in how it functions right now. 
+

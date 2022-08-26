@@ -1,0 +1,70 @@
+---
+title: "Title in sentence case" # <---- UPDATE ME
+subtitle: 'Optional' # <---- UPDATE ME
+description:
+  Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, 
+  consectetur, adipisci velit # <---- UPDATE ME
+author:
+  - Jake Wittman
+    url: https://wittja01.github.io/website/
+date: INSERT-DATE-HERE
+image: preview-image.jpg  # <---- UPDATE ME 
+license: CC BY
+repository_url: https://github.com/wittja01/website
+params:
+  slug: INSERT-SLUG-HERE
+  date: INSERT-DATE-HERE
+  repo: wittja01/personal_website
+  site: https://wittja01.github.io/personal_website
+citation: true
+---
+
+<!----
+Use 
+refinery::use_article_template(
+    template = "_templates/standard_template.Rmd",
+    slug = "how-cold-is-too-cold", 
+    date = "2022-01-11",
+    renv_new = TRUE
+)
+to generate new post
+
+checklist:
+  - check the "update me" messages in YAML above
+  - initialise the _renv env with refinery::renv_load("1999-12-31_fabulous-blog-post")
+  - populate the lockfile with refinery::renv_snapshot("name of post folder")
+  - update the _renv folder from snapshot with refinery::restore("name of post folder")
+
+---->
+
+
+<!--------------- setup post ----------------->
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+refinery::renv_load(paste(params$date, params$slug, sep = "_"))
+```
+
+
+<!--------------- post ----------------->
+
+At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat.
+
+
+<!--------------- appendices ----------------->
+
+```{r, echo=FALSE, eval=FALSE}
+# Dunno what this does but might be useful later so i'm keeping it
+refinery::insert_appendix(
+  repo_spec = params$repo, 
+  name = paste(params$date, params$slug, sep = "_")
+)
+```
+
+
+
+
+
+
+
+

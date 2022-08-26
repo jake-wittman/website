@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.1.113">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Jake Wittman">
+<meta name="dcterms.date" content="2022-01-11">
+<meta name="description" content="Or how I determined what minimum temperature would kill a parasitoid wasp we use to control the invasive beetle emerald ash borer">
+
+<title>Jake Wittman - How cold is too cold for a wasp?</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: 1;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+<link href="../../site_libs/tabwid-1.0.0/tabwid.css" rel="stylesheet">
+<link href="../../site_libs/tabwid-1.0.0/scrool.css" rel="stylesheet">
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+</head>
+
+<body class="nav-fixed fullcontent">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Jake Wittman</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../index.html">Home</a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html">About</a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../projects.html">Projects</a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../cv.html">CV</a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="https://github.com/wittja01">GitHub</a>
+  </li>  
+</ul>
+              <div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">How cold is too cold for a wasp?</h1>
+</div>
+
+<div>
+  <div class="description">
+    Or how I determined what minimum temperature would kill a parasitoid wasp we use to control the invasive beetle emerald ash borer
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Jake Wittman </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">January 11, 2022</p>
+    </div>
+  </div>
+    
+  </div>
+  
+
+</header>
+
+<!----
+Use 
+refinery::use_article_template(
+    template = "_templates/standard_template.Rmd",
+    slug = "how-cold-is-too-cold", 
+    date = "2022-01-11",
+    renv_new = TRUE
+)
+to generate new post
+
+checklist:
+  - check the "update me" messages in YAML above
+  - initialise the _renv folder with refinery::renv_new("name of post folder")
+  - populate the lockfile with refinery::renv_snapshot("name of post folder")
+  - update the _renv folder from snapshot with refinery::restore("name of post folder")
+
+---->
+<!--------------- setup post ----------------->
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "F:/Documents/website/posts/2022-01-11_how-cold-is-too-cold"</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "F:\\Documents\\website"</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "F:\\Documents\\website"</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "F:\\Documents\\website"</code></pre>
+</div>
+</div>
+<p><strong>Tl;dr: A wasp we use to control populations of an invasive beetle in North America should be able to survive most winters in the northern range of locations it would be released. This is good, because it’s potential ability to survive in the north is part of the reason it was selected as a biological control agent.</strong></p>
+<p>If you live in the eastern half of the United States and are a fan of trees, you’ve probably heard about emerald ash borer. This little jewel beetle is destroying ash trees here in the United States. It arrived in Michigan in the 1990s and was first detected in the early 2000s. It was most likely introduced on some solid wood packing material brought over from it’s native range in eastern Asia. The beetle is an insidious killer, causing virtually 100% ash mortality in areas where it has spread to in North America. The beetle spends the majority of it’s life feeding as a larva underneath the bark of ash trees, which makes it very difficult to detect early on. It is often not detected for several years, at which time ash trees will start to shows signs of infestation. At this point though, the beetle populations will be so large and spread out eradication is virtually impossible.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="eab.jpg" style="width:50.0%;height:50.0%" class="figure-img"></p>
+<p></p><figcaption class="figure-caption">Emerald ash borer is an invasive beetle destroying ash trees in North America. Image from Pennsylvania Department of Conservation and Natural Resources</figcaption><p></p>
+</figure>
+</div>
+<p>One tool we have to combat the spread of this insect is a classical biological control program. Biological control (often abbreviated just as biocontrol) programs make use of, you may have guessed, biology to tackle pest issues. In this case, we’re talking about using predators or parasites from the native range of emerald ash borer. You may recall learning about biocontrol in your high school biology class. Examples from the past where BIG mistakes were made in the judicious movement of predators to novel ecosystems are often used to highlight the danger of moving organisms around without considering how they’ll interact with the organisms that live in the target destination. Cane toads released in Australia in the 1930s to deal with a cane beetle problem have become the pests, rather than dealing with the pests they were supposed to suppress. These toads are not specific predators; they eat many plantas and insects beyond just the cane beetle. We’ve learned a lot of lessons from these failed biocontrol attempts. In many places, including the US, any potential biocontrol agent has to go through extensive testing to show that it will not have off-target effects. In other words, they have to show that any native organisms related to the target pest will not be attacked by the biological control agent.</p>
+<p>In the USA, four wasps native to eastern Asia that attack emerald ash borer have been tested and approved for release as part of the biocontrol program. These wasps are parasitoids, which are similar to parasites in that they live on a host organism, but parasitoids will always ultimately kill their host. These wasps are very small and do not sting humans. They cannot eradicate emerald ash borer but they (hopefully) will cause enough mortality to slow the growth of the beetle’s populations, which in turn will slow its spread and how quickly trees in invaded areas die. This gives management agencies more time to react, as trees killed by this beetle need to be removed or important trees need to be identified and treated with insecticide injections.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="sgalinae.jpg" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption"><em>Spathius galinae</em>, one of four parasitoid wasps used in the biological control program for emerald ash borer in North America. Image from Jian Duan (USDA-ARS Beneficial Insects Introduction Research Unit) - https://www.flickr.com/photos/usdagov/14053044929.</figcaption><p></p>
+</figure>
+</div>
+<p>One of these wasps, <em>Spathius galinae</em>, was the focus of one of my dissertation chapters. This tiny wasp was the last of the four biological control agents to be approved for release in the US. It’s currently being released in locations north of 40° latitude as a replacement for <em>Spathius galinae</em>, one of the other parasitoids. <em>Spathius galinae</em> populations were not performing well north of 40°, likely because the colder winters caused a mismatch in the development rate of this insect and emerald ash borer, so that it was not active when it would be most effective. <em>Spathius agrili</em> is from a colder region of eastern Asia in Russia, so should be better suited to the more northern climates. Some work has been done to see how well this insect will survive winters in the northeastern United States, but none had been done in the upper Midwest where winters can get extremely cold. I set out to answer that question.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="40th_parallel.jpg" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">Release locations for <em>Spathius galinae</em> and <em>Spathius agrili</em> in the United States and Canada. Underlying map from Duan et al.&nbsp;2018 Progress and Challenges of Protecting North American Ash Trees from the Emerald Ash Borer Using Biological Control</figcaption><p></p>
+</figure>
+</div>
+<p>Many insects native to areas where it gets cold in the winter have developed behavioral or physiological mechanisms to handle the cold, however they all have their limits. We wanted to know what temperatures would kill <em>Spathius galinae</em> so we could determine if there was anywhere in North America where the cold would limit its effectiveness. We started with some labortory experiments to get some baselines in a nice controlled environment.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="chiller.jpg" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">The silicon chiller bath we used to control how quickly the insects were chilled.</figcaption><p></p>
+</figure>
+</div>
+<p><em>Spathius galinae</em> spend the winter in an immature form, known as a pre-pupae. We had some of these sent to us from a research lab where these insects are reared and we put them in the silicon chiller bath (pictured above). This bath allows us to cool the insects down to temperatures as low as -40 °F (although in practice, it has difficulty getting below -25 °F) at a controlled rate so we can observe them. The wires coming out of those test-tubes are thermocouples, which we use to measure the actual temperature of each insect. When we are cooling these insects, we choose a range of temperatures to cool them down to and we look for ‘exotherms’. When the water freezes, it releases a little bit of heat which can be picked up by these thermocouples. This release of heat is called an exotherm. The exotherm is important to look for as it determines the insects ‘supercooling point’.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="prepupae.jpg" style="width:50.0%;height:50.0%" class="figure-img"></p>
+<p></p><figcaption class="figure-caption">A discolored <em>Spathius galinae</em> prepupae. This one was killed b y the chilling process and became discolored. Normally, they’re a nice creamy-white.</figcaption><p></p>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="exotherm.jpg" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">When water freezes, it releases a bit of heat which can be picked up by our thermocouples. The insects in this image are shown freezing around -26 °C (-15 °F).</figcaption><p></p>
+</figure>
+</div>
+<p>I mentioned before that insects have evolved mechanisms for dealing with the cold and supercooling is one of those. Many insects produce anti-freeze compounds that prevent the water in their cells from freezing. Freezing water inside of cells is bad bad bad - it can rupture the cell walls and kill them. By supercooling their body liquids, some insects are able to survive sub-zero temperatures. (Many insects can supercool, but supercooling doesn’t always save them. They can be killed via other pathways even if they don’t freeze.) Insects that supercool and do not die before they freeze are termed ‘chill tolerant’. Other insects are freeze tolerant; they are able to survive freezing. Measuring the supercooling point (when the insect freezes) and then transferring them to an environment where we can see if they’ll resume development and living is a way to determine if an insect is freeze tolerant or not. By cooling them to a range of lower temperatures, we can also get a baseline for how many insects we would expect to survive given minimum temperatures in the winter.</p>
+<p>We measured both the distribution of supercooling points, which gives us an idea of what proportion of the population freezes at progressively lower temperatures, and then we looked at how many of the insects were able to complete development and emerge as adults after being chilled to this low temperature. (Aside: the insects were chilled to the designated low temperature, then immediately placed in a 0 °C (32 °F) container until we could move them to incubators. This is called a lower lethal temperature experiment; we’re trying to find the lower temperature such that a brief exposure kills them. This is in contrast to a lower lethal time temperature, where an insect is held at a designated low temperature for various periods of time to see how longer exposures affect mortality. Both are measures of an insects cold tolerance, but we focused on lower lethal temperature for this part of the study.) We fit a logistic regression to the lower lethal temperature data as a model of what proportion of insects we would expect to become adults given exposure to a particular low temperature.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="index_files/figure-html/scp-plots-1.png" class="img-fluid figure-img" width="643"></p>
+<p></p><figcaption class="figure-caption">Distribution of supercooling points observed in larvae of <em>Spathius galinae</em> (<em>n</em> = 73) cooled in a silicon cooling bath.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="index_files/figure-html/llt-plots-1.png" class="img-fluid figure-img" width="643"></p>
+<p></p><figcaption class="figure-caption">Probability that larvae of <em>Spathius galinae</em> (<em>n</em> = 427) would eclose after being cooled in the laboratory to a sub-zero temperature. Points are the Abbott corrected proportion of <em>S. galinae</em> that eclosed (1 = 100% eclosion, 0 = 0% eclosion) at a given temperature, while error bars are ± two standard errors. The solid line are predicted response rates from the models fit to these data. The grey band represents the 95% confidence interval for the fitted line.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Sweet! We have a nice cumulative freezing curve - we can see that about 50% of the population is expected to freeze at about -25 °C (-13 °F) (remember, freezing doesn’t necessarily equal death. We’re looking to see if any of these insects that froze will continue to develop). The resulting data are kind of messy (why such a low proportion emerging at around -6 °C? Why so many surviving at -30 °C?), but we see a clear trend that as temperatures drop, more and more of the insects are dying as they don’t finish development. What isn’t clear from this graph though is that a few of the insects that did freeze did survive - we’ll come back to that later.</p>
+<p>For the second part of this study, we went out to the field to see how the insects would fare in the real world. We took some ash log sections which contained emerald ash borer under the bark that had been parasitized by <em>Spathius galinae</em> out to three locations in Minnesota: the University of Minnesota campus in Saint Paul, a research station in the west central part of the state near Morris, MN and further south of Saint Paul near Waseca, MN. We placed half our logs at each location under the snow to provide them with a more stable and insulated environment and tied the other half to the trunk of trees above the snowline. We left them out over the winter of 2019-2020 to be exposed to the elements! We were going to come back in May 2020 to grab them, but due to the brand new covid-19 pandemic and upcoming University travel restrictions, we went out in early March to collect them. Winter in Minnesota doesn’t really end until late April, so that was unfortunate but they still were exposed to some pretty cold temperatures as we had a polar vortex event in December 2019. In addition to our sites in Minnesota, we had a control group out in Delaware where our insects were reared that were left in an open-air insectary. This group was exposed to much warmer winter temperatures. In the following graph, you can see the temperatures we recorded above and below the snow at each site.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="index_files/figure-html/hobo-graph-1.png" class="img-fluid figure-img" width="643"></p>
+<p></p><figcaption class="figure-caption">Time series of the average ambient temperature recorded near bolts placed at three sites in Minnesota underneath the snow, in the air above the snow, as well as one site in an open air insectary in Delaware. Temperatures were recorded from 16 December 2019 - 25 March 2020 by a HOBO data logger.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Once we collected the logs, we took them back to the lab and threw them in incubators to let the insects develop and emerge. We had some concerns that the wood dried out over the winter, since it wasn’t part of a living tree, and this would make it difficult for any new adults to chew their way out from underneath. To address that concern, we let the logs sit for a few weeks to let any adults emerge that would emerge, then we scraped away the bark to look for prepupae that died over the winter and prepupae that had successfully developed to the adult form but were unable to emerge from the log. We fit two logistic regression models using the proportion that eclosed (fancy word for completed development) and the proportion that emerged from the logs as our response variable and temperature as the predictor. We originally included whether they were under snow or above the snow, but this term was not statistically significant so it was dropped from the model (not to mention, heavily correlated with temperature). These models are actually generalized estimating equations, which are one method for handling data that are correlated. These models allow you to specify a correlation structure for the data, to ensure that our variance estimates aren’t too narrow. Because each <em>Spathius galinae</em> lays multiple offspring on a single emerald ash borer (these groups of offspring are called a ‘brood’), we would expect the fate of each larvae in a brood to be correlated with the other larvae in the brood. So we include an exchangeable correlation structure in our variance to capture that structure in the data:</p>
+<p><span class="math display">\[
+var(Y_i) = \sigma^2\begin{bmatrix}
+1 &amp; \rho &amp; ... &amp; \rho \\
+\rho &amp; 1 &amp; ... &amp; \rho \\
+\rho &amp; \rho &amp; ... &amp; \rho \\
+\rho &amp; \rho &amp; ... &amp; 1\\
+\end{bmatrix}
+\]</span></p>
+<p>An exchangeable correlation structure lets us assume that all larvae within a brood are equally correlated and no one brood is more or less correlated than any other. Generalized estimating equations have the benefit of being marginal models, and so we’re marginalizing over the variation due to individual broods (as in, genetics) and estimating a population level response to cold.</p>
+<div class="cell" data-tab.id="overwinter-prop" data-tab.cap="Proportion of *Spathius galinae* eclosing or emerging after overwintering from 16 December 2019 -- 25 March 2020 at three locations in Minnesota and in Delaware. Larvae in Minnesota either overwintered in bolts underneath the snow or tied at breast height to a tree trunk and exposed to the ambient air. The sample size used in calculating each proportion is listed in parenthesis.">
+<div class="cell-output-display">
+
+<div class="tabwid"><style>.cl-24b5a5bc{}.cl-24ae85b6{font-family:'Times New Roman';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-24ae85b7{font-family:'Times New Roman';font-size:6.6pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;position: relative;bottom:3.3pt;}.cl-24ae85b8{font-family:'Arial';font-size:6.6pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;position: relative;bottom:3.3pt;}.cl-24ae85b9{font-family:'Arial';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-24ae9ac4{margin:0;text-align:center;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-24ae9ac5{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-24aed9b2{width:57.6pt;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-24aed9b3{width:79.2pt;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-24aed9b4{width:57.6pt;background-color:transparent;vertical-align: middle;border-bottom: 2pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-24aed9b5{width:79.2pt;background-color:transparent;vertical-align: middle;border-bottom: 2pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-24aed9b6{width:57.6pt;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(255, 255, 255, 0.00);border-top: 0 solid rgba(255, 255, 255, 0.00);border-left: 0 solid rgba(255, 255, 255, 0.00);border-right: 0 solid rgba(255, 255, 255, 0.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-24aed9b7{width:79.2pt;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(255, 255, 255, 0.00);border-top: 0 solid rgba(255, 255, 255, 0.00);border-left: 0 solid rgba(255, 255, 255, 0.00);border-right: 0 solid rgba(255, 255, 255, 0.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-24aed9b8{width:57.6pt;background-color:transparent;vertical-align: middle;border-bottom: 2pt solid rgba(102, 102, 102, 1.00);border-top: 2pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-24aed9b9{width:79.2pt;background-color:transparent;vertical-align: middle;border-bottom: 2pt solid rgba(102, 102, 102, 1.00);border-top: 2pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-24aed9ba{width:57.6pt;background-color:transparent;vertical-align: middle;border-bottom: 2pt solid rgba(102, 102, 102, 1.00);border-top: 2pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-24aed9bb{width:79.2pt;background-color:transparent;vertical-align: middle;border-bottom: 2pt solid rgba(102, 102, 102, 1.00);border-top: 2pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table class="cl-24b5a5bc">
+<caption class="">
+<p>Proportion of <em>Spathius galinae</em> eclosing or emerging after overwintering from 16 December 2019 – 25 March 2020 at three locations in Minnesota and in Delaware. Larvae in Minnesota either overwintered in bolts underneath the snow or tied at breast height to a tree trunk and exposed to the ambient air. The sample size used in calculating each proportion is listed in parenthesis.</p>
+</caption>
+
+<thead><tr style="overflow-wrap:break-word;"><td class="cl-24aed9b9"><p class="cl-24ae9ac4"><span class="cl-24ae85b6">Location</span></p></td><td colspan="2" class="cl-24aed9b8"><p class="cl-24ae9ac4"><span class="cl-24ae85b6">Under Snow</span></p></td><td colspan="2" class="cl-24aed9b8"><p class="cl-24ae9ac4"><span class="cl-24ae85b6">Air</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-24aed9bb"><p class="cl-24ae9ac5"><span class="cl-24ae85b6"></span></p></td><td class="cl-24aed9ba"><p class="cl-24ae9ac5"><span class="cl-24ae85b6">Proportion Eclosed</span></p></td><td class="cl-24aed9ba"><p class="cl-24ae9ac5"><span class="cl-24ae85b6">Proportion Emerged</span></p></td><td class="cl-24aed9ba"><p class="cl-24ae9ac5"><span class="cl-24ae85b6">Proportion Eclosed</span></p></td><td class="cl-24aed9ba"><p class="cl-24ae9ac5"><span class="cl-24ae85b6">Proportion Emerged</span></p></td></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-24aed9b3"><p class="cl-24ae9ac4"><span class="cl-24ae85b6">Newark, DE</span></p></td><td class="cl-24aed9b2"><p class="cl-24ae9ac4"><span class="cl-24ae85b6">-</span></p></td><td class="cl-24aed9b2"><p class="cl-24ae9ac4"><span class="cl-24ae85b6">-</span></p></td><td class="cl-24aed9b2"><p class="cl-24ae9ac4"><span class="cl-24ae85b6">0.6 (91)</span></p></td><td class="cl-24aed9b2"><p class="cl-24ae9ac4"><span class="cl-24ae85b6">0.34 (91)</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-24aed9b3"><p class="cl-24ae9ac4"><span class="cl-24ae85b6">Morris, MN</span><span class="cl-24ae85b7">a</span></p></td><td class="cl-24aed9b2"><p class="cl-24ae9ac4"><span class="cl-24ae85b6">0.99 (199)</span></p></td><td class="cl-24aed9b2"><p class="cl-24ae9ac4"><span class="cl-24ae85b6">0.62 (199)</span></p></td><td class="cl-24aed9b2"><p class="cl-24ae9ac4"><span class="cl-24ae85b6">0.02 (49)</span></p></td><td class="cl-24aed9b2"><p class="cl-24ae9ac4"><span class="cl-24ae85b6">0 (49)</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-24aed9b3"><p class="cl-24ae9ac4"><span class="cl-24ae85b6">St. Paul, MN</span></p></td><td class="cl-24aed9b2"><p class="cl-24ae9ac4"><span class="cl-24ae85b6">0.49 (87)</span></p></td><td class="cl-24aed9b2"><p class="cl-24ae9ac4"><span class="cl-24ae85b6">0.3 (87)</span></p></td><td class="cl-24aed9b2"><p class="cl-24ae9ac4"><span class="cl-24ae85b6">0.85 (48)</span></p></td><td class="cl-24aed9b2"><p class="cl-24ae9ac4"><span class="cl-24ae85b6">0.38 (48)</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-24aed9b5"><p class="cl-24ae9ac4"><span class="cl-24ae85b6">Waseca, MN</span></p></td><td class="cl-24aed9b4"><p class="cl-24ae9ac4"><span class="cl-24ae85b6">0.72 (43)</span></p></td><td class="cl-24aed9b4"><p class="cl-24ae9ac4"><span class="cl-24ae85b6">0.4 (43)</span></p></td><td class="cl-24aed9b4"><p class="cl-24ae9ac4"><span class="cl-24ae85b6">0 (41)</span></p></td><td class="cl-24aed9b4"><p class="cl-24ae9ac4"><span class="cl-24ae85b6">0 (41)</span></p></td></tr></tbody><tfoot><tr style="overflow-wrap:break-word;"><td colspan="5" class="cl-24aed9b7"><p class="cl-24ae9ac5"><span class="cl-24ae85b8">a</span><span class="cl-24ae85b9">A small group of bolts that were shipped to Minnesota was placed immediately at 25°C (70% RH). Of the 177 larvae present in these segments, 98% eclosed and 72% emerged.</span></p></td></tr></tfoot></table></div>
+</div>
+</div>
+<p>In the graphs below we can see how our insects fared. As expected, we see fewer insects emerging and developing the colder it got. It looks like about -30 °C is approaching the lower limit of survival for these insects. Interestingly, there were a few insects that were able to complete development at that low temperature (although they did not actually emerge from the logs). Given that those insects likely froze and still survived, this suggests that there may be variation in the population of wasps that allows for different strategies to tolerate the winter! Most of the insects appear to be chill tolerant (or freeze intolerant, as they die after freezing), but there may be some subset that is freeze tolerant. This is pretty exciting and a cool avenue for future work would be further testing to see if this is actually true.</p>
+<div class="cell" data-hash="index_cache/html/overwinter-llt-eclose_ec5a19727d7e179dfb2e098a9f889ac3">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="index_files/figure-html/overwinter-llt-eclose-1.png" class="img-fluid figure-img" width="643"></p>
+<p></p><figcaption class="figure-caption">Relationship between the probability of eclosing (A) or emerging from underneath the bark (B) for <em>Spathius galinae</em> (<em>n</em> = 558) and the lowest temperature experienced over the winter of 2019 - 2020. Larvae were overwintering in bolts under the snow or tied to a treek trunk above the snowline in Minnesota, USA. Open points are the proportion of each brood that eclosed (A) or emerged (B) and have been jittered to facilitate viewing. Solid black points are the overall proportion of <em>S. galinae</em> eclosing (A) or emerging (B) at a given temperature, while error bars are ± one standard error. The solid line is the fitted population model. Grey bands represent 95% confidence interval for the fitted line.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The final part of this project was to use the models we developed to produce predictions of survival! I pulled minimum winter temperatures rasters for two winters: a relatively mild winter (2017-2018 winter) and a relatively severe winter, with a polar vortex event (2013-2014 winter). Then I fed those temperatures into the models we produced both from the lab and the field to predict how many insects would complete development (aka eclose) and how many would remain unfrozen. The predictions are restricted to the range of ash in North America, as you can’t have <em>Spathius galinae</em> without emerald ash borer and you can’t have emerald ash borer without ash.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="index_files/figure-html/map-severe-winter-1.png" class="img-fluid figure-img" width="864"></p>
+<p></p><figcaption class="figure-caption">Predictions and confidence intervals of the percent of <em>S. galinae</em> that will eclose or initiate freezing based on minimum winter temperatures. Figures A - C display the lower 95% confidence interval prediction, predicted value, and the upper 95% confidence interval prediction, respectively, for a winter with relatively mild minimum temperaures (2017 - 2018), while figures D - F represent the same values for a winter with extreme minimum temperatures due to a polar vortex (2013 - 2014).</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>We used all three models because each measures a slightly different thing and it allows us to account for the experimental uncertainty inherent to this system. The models of eclosion produced from the lab are our most optimistic models, predicting high survival under even relatively cold temperatures. The field model for eclosion is slightly less optimistic, but we still see survival in even the coldest areas. The right-most column of maps shows us how many insects we would expect to freeze based on those measured exotherms, and even though we see 100% freezing in the far north, our results suggest some proportion of the insects should survive temperatures this cold.</p>
+<p>Of course, emerald ash borer is also an insect and is also adversely affected by these cold temperatures! Other work has shown that emerald ash borer at least as cold tolerant as <em>Spathius galinae</em>, and maybe a bit more. This means that even if <em>Spathius galinae</em> has a harder time in the colder areas, emerald ash borer will too. Releases of the wasp can be focused in areas that aren’t at the extreme edges and we should expect good performance across most of the northern range of ash in North America!</p>
+<!--------------- appendices ----------------->
+
+
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

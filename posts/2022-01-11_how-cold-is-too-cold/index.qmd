@@ -1,0 +1,1109 @@
+---
+title: "How cold is too cold for a wasp?" # <---- UPDATE ME
+description:
+  Or how I determined what minimum temperature would kill a parasitoid wasp we use to control the invasive beetle emerald ash borer
+author:
+  - name: Jake Wittman
+    url: https://wittja01.github.io/website/
+date: 2022-01-11
+image: sgalinae.jpg  # <---- UPDATE ME 
+license: CC BY
+citation_url: https://wittja01.github.io/website/how-cold-is-too-cold 
+repository_url: https://github.com/wittja01/website
+params:
+  slug: how-cold-is-too-cold
+  date: 2022-01-11
+  repo: wittja01/personal_website
+  site: https://wittja01.github.io/personal_website
+---
+
+<!----
+Use 
+refinery::use_article_template(
+    template = "_templates/standard_template.Rmd",
+    slug = "how-cold-is-too-cold", 
+    date = "2022-01-11",
+    renv_new = TRUE
+)
+to generate new post
+
+checklist:
+  - check the "update me" messages in YAML above
+  - initialise the _renv folder with refinery::renv_new("name of post folder")
+  - populate the lockfile with refinery::renv_snapshot("name of post folder")
+  - update the _renv folder from snapshot with refinery::restore("name of post folder")
+
+---->
+
+
+<!--------------- setup post ----------------->
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE,
+   include = FALSE,
+   message = FALSE,
+   warning = FALSE,
+   fig.width = 6.7,
+ tab.cap.style = "Table Caption",
+  tab.cap.pre = "Table ",
+  tab.cap.sep = ": ")
+
+```
+
+```{r setup2, include=TRUE}
+knitr::opts_chunk$set(
+   echo = FALSE,
+   include = FALSE,
+   message = FALSE,
+   warning = FALSE,
+   fig.width = 6.7,
+ tab.cap.style = "Table Caption",
+  tab.cap.pre = "Table ",
+  tab.cap.sep = ": "
+)
+
+print(getwd())
+print(Sys.getenv('QUARTO_PROJECT_DIR'))
+warning(print(Sys.getenv('QUARTO_PROJECT_DIR')))
+message(print(Sys.getenv('QUARTO_PROJECT_DIR')))
+# Try setting csl: "environmental_entomology.csl" in YAML
+set.seed(314)
+library(tidyverse)
+library(flextable)
+library(lme4)
+library(merTools)
+library(modelr)
+library(lmerTest)
+library(rsample)
+library(egg)
+library(officedown)
+library(patchwork)
+library(emmeans)
+library(broom)
+library(ggeffects)
+library(merTools)
+library(ggmap)
+library(maps)
+library(rgdal)
+library(viridis)
+library(sp)
+library(spatial)
+library(officer)
+library(sf)
+library(raster)
+library(ciTools)
+library(ggtext)
+library(geepack)
+library(Zelig)
+library(broom.mixed)
+
+options(digits = 10)
+conflicted::conflict_prefer("select", "dplyr")
+conflicted::conflict_prefer("filter", "dplyr")
+conflicted::conflict_prefer("rotate", "flextable")
+conflicted::conflict_prefer("font", "flextable")
+conflicted::conflict_prefer("lmer", "lmerTest")
+
+# Function for correctly returning the number of sigfigs in the document
+sigfig <- function(number, digits) {
+   formatC(signif(number, digits = digits), digits = digits, format = "fg", flag = "#")
+}
+
+```
+
+```{r lab-models, message: FALSE, warning: FALSE, cache: TRUE}
+#source(here::here("scripts/01_04_scp_models.R"), local = knitr::knit_global())
+
+dat <- read_csv("data/cleaned_scp_data.csv") %>% 
+   mutate(degree_min = as.factor(degree_min),
+          trial_id = as.factor(trial_id))
+
+discolor_model <- glmer(discolor_3day ~ temp_pulled_grouped * degree_min_continuous + (1 | trial_id),
+           data = dat,
+           family = binomial,
+           nAGQ = 50)
+
+eclosion_model <- glmer(eclose ~ temp_pulled_grouped * degree_min_continuous + (1 | trial_id),
+                  data = dat,
+                  family = binomial,
+                  nAGQ = 50)
+scp_fm <- lmer(est_scp ~ degree_min  +(1|trial_id), data = dat)
+
+field_model_discolor <- glmer(discolor_3day ~ temp_pulled_grouped  + (1 | trial_id),
+                     data = dat,
+                     family = binomial,
+                     nAGQ = 50)
+field_model_eclose <- glmer(eclose ~ temp_pulled_grouped  + (1 | trial_id),
+                            data = dat,
+                            family = binomial,
+                            nAGQ = 50)
+
+
+scp_llt_dat <- dat %>% 
+      mutate(temp_pulled_fact = case_when(is.na(temp_pulled_grouped) ~ "control",
+                                          TRUE ~ as.character(temp_pulled_grouped)))
+
+
+# Trying two abbott corrections - one with the control as baseline, the other
+# with the 0 temp group at baseline
+
+control_prop_df <- scp_llt_dat %>%
+   group_by(temp_pulled_fact) %>%
+   summarise(
+      prop_normal_color = mean(discolor_3day, na.rm = TRUE),
+      prop_eclose = mean(eclose, na.rm = TRUE),
+      n = n()
+   ) 
+# Specify control reference proportions
+control0_norm_color <-
+   control_prop_df$prop_normal_color[control_prop_df$temp_pulled_fact == "0"]
+control0_eclose <-
+   control_prop_df$prop_eclose[control_prop_df$temp_pulled_fact == "0"]
+
+# Calculate Abbott correction when chill rate is included
+abbott_scp_rate <- scp_llt_dat %>% 
+   group_by(temp_pulled_fact, degree_min_continuous, degree_min) %>% 
+   summarise(prop_normal_color = mean(discolor_3day, na.rm = TRUE),
+             prop_eclose = mean(eclose, na.rm = TRUE),
+             n = n()) %>% 
+   mutate(
+      control0_normal_color = control0_norm_color,
+      control0_eclose = control0_eclose,
+      v_control0_eclose = 4 * ((1 - control0_eclose) * ((control0_eclose) / 84)),
+      v_control0_norm_col = 4 * ((1 - control0_normal_color) * ((control0_normal_color) / 84)),
+      g = ((v_control0_eclose * 4.41) / (control0_eclose)^2) * 16,
+      g_col = ((v_control0_norm_col * 4.41) / (control0_normal_color)^2) * 16,
+      abbott0_normal_color = 1 - (control0_normal_color - prop_normal_color) /  control0_normal_color,
+      abbott0_eclose = 1 - (control0_eclose - prop_eclose) / control0_eclose,
+      se_eclose = abbott0_eclose / g,
+      se_col = abbott0_normal_color / (g_col * 10)
+   ) %>% 
+   mutate(
+          abbott0_normal_color = case_when(abbott0_normal_color > 1 ~ 1,
+                                          abbott0_normal_color < 0 ~ 0,
+                                          TRUE ~ abbott0_normal_color),
+          abbott0_eclose = case_when(abbott0_eclose > 1 ~ 1,
+                                    abbott0_eclose < 0 ~ 0,
+                                    TRUE ~ abbott0_eclose)) %>% 
+   filter(temp_pulled_fact != "control")
+
+abbott_scp_rate$temp_pulled <- as.numeric(abbott_scp_rate$temp_pulled_fact)
+abbott_scp_rate <- abbott_scp_rate %>% 
+   select(temp_pulled, everything()) %>% 
+   select(-temp_pulled_fact) %>%
+   mutate(upr_0_eclose = case_when(abbott0_eclose + 2 * se_eclose > 1 ~ 1,
+                                  TRUE ~ abbott0_eclose + 2 * se_eclose),
+          lwr_0_eclose = case_when(abbott0_eclose - 2 * se_eclose < 0 ~ 0,
+                                  TRUE ~ abbott0_eclose - 2* se_eclose),
+          upr_0_norm_color = case_when(abbott0_normal_color + 2 * se_col > 1 ~ 1,
+                                       TRUE ~ abbott0_normal_color + 2 * se_col),
+          lwr_0_norm_color = case_when(abbott0_normal_color - 2 * se_col < 0 ~ 0,
+                                       TRUE ~ abbott0_normal_color - 2 * se_col)) %>% 
+   arrange(desc(temp_pulled))
+
+# Calculate Abbott correction without chill rate
+abbott_scp <- scp_llt_dat %>% 
+   group_by(temp_pulled_fact) %>% 
+   summarise(prop_normal_color = mean(discolor_3day, na.rm = TRUE),
+             prop_eclose = mean(eclose, na.rm = TRUE),
+             n = n()) %>% 
+   mutate(
+      control0_normal_color = control0_norm_color,
+      control0_eclose = control0_eclose,
+      v_control0_eclose = 4 * ((1 - control0_eclose) * ((control0_eclose) / 84)),
+      v_control0_norm_col = 4 * ((1 - control0_normal_color) * ((control0_normal_color) / 84)),
+      g = ((v_control0_eclose * 4.41) / (control0_eclose)^2) * 16,
+      g_col = ((v_control0_norm_col * 4.41) / (control0_normal_color)^2) * 16,
+      abbott0_normal_color = 1 - (control0_normal_color - prop_normal_color) /  control0_normal_color,
+      abbott0_eclose = 1 - (control0_eclose - prop_eclose) / control0_eclose,
+      se_eclose = abbott0_eclose / g,
+      se_col = abbott0_normal_color / (g_col * 10)
+   ) %>% 
+   mutate(
+          abbott0_normal_color = case_when(abbott0_normal_color > 1 ~ 1,
+                                          abbott0_normal_color < 0 ~ 0,
+                                          TRUE ~ abbott0_normal_color),
+          abbott0_eclose = case_when(abbott0_eclose > 1 ~ 1,
+                                    abbott0_eclose < 0 ~ 0,
+                                    TRUE ~ abbott0_eclose)) %>% 
+   filter(temp_pulled_fact != "control")
+
+abbott_scp$temp_pulled <- as.numeric(abbott_scp$temp_pulled_fact)
+abbott_scp <- abbott_scp %>% 
+   select(temp_pulled, everything()) %>% 
+   select(-temp_pulled_fact) %>%
+   mutate(upr_0_eclose = case_when(abbott0_eclose + 2 * se_eclose > 1 ~ 1,
+                                  TRUE ~ abbott0_eclose + 2 * se_eclose),
+          lwr_0_eclose = case_when(abbott0_eclose - 2 * se_eclose < 0 ~ 0,
+                                  TRUE ~ abbott0_eclose - 2* se_eclose),
+          upr_0_norm_color = case_when(abbott0_normal_color + 2 * se_col > 1 ~ 1,
+                                       TRUE ~ abbott0_normal_color + 2 * se_col),
+          lwr_0_norm_color = case_when(abbott0_normal_color - 2 * se_col < 0 ~ 0,
+                                       TRUE ~ abbott0_normal_color - 2 * se_col)) %>% 
+   arrange(desc(temp_pulled))
+
+
+
+# Create a proportion frozen dataset for scp to fit a logistic regression to
+scp_cdf <- scp_llt_dat %>% 
+   select(trial, temp_pulled_grouped, est_scp, uid, trial_id) %>% 
+   filter((est_scp < -18 | is.na(est_scp)) & temp_pulled_grouped == -32) %>% 
+   group_by(est_scp) %>% 
+   count() %>% 
+   arrange(desc(est_scp))
+
+scp_cdf$prop_frozen <- 1 - cume_dist(scp_cdf$est_scp)
+scp_cdf$prop_unfrozen <- cume_dist(scp_cdf$est_scp)
+
+# SCP logistic regression
+scp_logreg <- glm(prop_unfrozen ~ est_scp,
+                  weights = n,
+                  data = scp_cdf,
+                  family = "binomial")
+
+
+# Get fitted values and SE for the scp model to overlay on abbott_eclose and
+# abbott_normal color
+scp_preds <- predict(scp_logreg,
+        newdata = data.frame(est_scp = seq(0, -32, by = -0.1)),
+        type = "link",
+        se.fit = TRUE)
+
+scp_preds_df <- data.frame(fit = scp_preds$fit,
+                           lwr = scp_preds$fit - 1.96 * scp_preds$se.fit,
+                           upr = scp_preds$fit + 1.96 * scp_preds$se.fit,
+                           est_scp = seq(0, -32, by = -0.1)) %>% 
+   mutate(fit = plogis(fit),
+          lwr = plogis(lwr),
+          upr = plogis(upr))
+
+
+# Abbott models
+# No qualitative changes between these Abbott models and the original
+a_lab_discolor <- glm(abbott0_normal_color ~ temp_pulled,
+                      data = abbott_scp,
+                      weights = n,
+                      family = "binomial")
+a_lab_eclose <- glm(abbott0_eclose ~ temp_pulled,
+                    data = abbott_scp,
+                    weights = n,
+                    family = "binomial")
+
+discolor_preds <- predict(a_lab_discolor,
+                          newdata = data.frame(temp_pulled = seq(0, -32, by = -0.1)),
+                          type = "response",
+                          se.fit = TRUE)
+eclose_preds <- predict(a_lab_eclose,
+                        newdata = data.frame(temp_pulled = seq(0, -32, by = -0.1)),
+                        type = "response",
+                        se.fit = TRUE)
+
+a_discolor_df <- data.frame(temp_pulled = seq(0, -32, by = -0.1),
+                            fit = discolor_preds$fit,
+                            lwr = discolor_preds$fit - 1.96 * discolor_preds$se.fit,
+                            upr = discolor_preds$fit + 1.96 * discolor_preds$se.fit)
+
+a_eclose_df <- data.frame(temp_pulled = seq(0, -32, by = -0.1),
+                            fit = eclose_preds$fit,
+                            lwr = eclose_preds$fit - 1.96 * eclose_preds$se.fit,
+                            upr = eclose_preds$fit + 1.96 * eclose_preds$se.fit)
+
+# Summarize for plots
+scp_summary <- scp_llt_dat %>% 
+   group_by(temp_pulled_grouped) %>% 
+   summarise(mean_discolor_3day = mean(discolor_3day, na.rm = TRUE),
+             mean_eclose = mean(eclose, na.rm = TRUE)) %>% 
+   mutate(se_discolor = sqrt((mean_discolor_3day * (1 - mean_discolor_3day)) / n()),
+          se_eclose = sqrt((mean_eclose * (1 - mean_eclose)) / n()))
+
+
+
+tidy_discolor_model <- tidy(discolor_model, exponentiate = FALSE, conf.int = TRUE)
+tidy_eclosion_model <- tidy(eclosion_model, exponentiate = FALSE, conf.int = TRUE)
+
+tidy_lab_discolor <- tidy(a_lab_discolor, exponentiate = FALSE, conf.int = TRUE)
+tidy_lab_eclose <- tidy(a_lab_eclose, exponentiate = FALSE, conf.int = TRUE)
+
+scp_anova <- anova(scp_fm)
+scp_anova <- janitor::clean_names(scp_anova)
+
+pred_dat_discolor <- ggpredict(field_model_discolor, "temp_pulled_grouped")
+```
+
+```{r field-models, message=FALSE, warning=FALSE, cache=TRUE}
+# Overwintering data
+
+overwinter_dat <- read_csv("data/overwintering_hobo_dat.csv") %>% 
+   mutate(treatment = case_when(site == "DE" ~ "Air",
+                                TRUE ~ treatment),
+          total_unemerged = unemerged_larvae + unemerged_adults,
+          treatment2 = case_when(site == "DE" ~ "DE",
+                                 TRUE ~ treatment),
+          prop_eclose = total_adults / total_insects)
+# Prop success is the proportion eclosed
+overwinter_dat_narm <-
+   overwinter_dat[complete.cases(overwinter_dat[, c("min_temp", "total_insects")]),]
+# Data summaries
+overwinter_sum <- overwinter_dat %>% 
+   group_by(site) %>% 
+   summarise(prop_survive = sum(total_adults, na.rm = TRUE) / sum(total_insects, na.rm = TRUE),
+             prop_emerged = sum(number_emg_sg, na.rm = TRUE) / sum(total_insects, na.rm = TRUE))
+
+# Summary by temperature
+overwinter_temp_sum <- overwinter_dat %>%
+   filter(site != "DE") %>% 
+   mutate(min_temp = round(min_temp),
+          min_temp = case_when(min_temp == -30 ~ -29.5,
+                               min_temp == -29 ~ -29.5,
+                               min_temp == -18 ~ -18.5,
+                               TRUE ~ min_temp)) %>% 
+   group_by(min_temp) %>% 
+   summarise(prop_survive = sum(total_adults, na.rm = TRUE) / sum(total_insects, na.rm = TRUE),
+             prop_emerged = sum(number_emg_sg, na.rm = TRUE) / sum(total_insects, na.rm = TRUE),
+             n = n())%>% 
+   mutate(se_prop_survive = sqrt((prop_survive * (1 - prop_survive)) / n),
+          se_emerged = sqrt((prop_emerged * (1 - prop_emerged)) / n))
+
+abbott_overwinter <- overwinter_dat_narm %>% 
+   group_by(site, treatment, min_temp, mean_RH, var_min_temp) %>% 
+   summarise(prop_eclose = sum(total_adults, na.rm = TRUE) / sum(total_insects, na.rm = TRUE),
+             prop_emerged = sum(number_emg_sg, na.rm = TRUE) / sum(total_insects, na.rm = TRUE),
+             n = sum(total_insects, na.rm = TRUE)) %>% 
+   mutate(control_eclose = 0.977,
+          control_emerged = 0.718) %>% 
+   filter(site != "Shipping") %>% 
+   mutate(abbott_eclose = 1 - (control_eclose - prop_eclose) / control_eclose,
+          abbott_emerge = 1 - (control_emerged - prop_emerged) / control_emerged) %>% 
+   mutate(abbott_eclose = case_when(abbott_eclose > 1 ~ 1, 
+                                       abbott_eclose < 0 ~ 0,
+                                       TRUE ~ abbott_eclose),
+             abbott_emerge = case_when(abbott_emerge > 1 ~ 1,
+                                      abbott_emerge < 0 ~ 0,
+                                      TRUE ~ abbott_emerge))
+
+
+
+overwinter_dat_node <- overwinter_dat_narm %>% 
+   filter(site != "DE")
+#########################
+# GEEs
+
+# Models
+# Same conclusion
+# Zelig doesn't seem to like the brood_uid as a character?? So I convert it to numeric
+overwinter_dat_node2 <- overwinter_dat_node %>% 
+   mutate(brood_uid = 1:nrow(.)) %>% 
+   select(brood_uid, min_temp, var_min_temp, mean_RH, prop_eclose, prop_emerge, total_insects) %>% 
+   as.data.frame()
+
+# For getting the actual values of parameters in a tidy format
+gee_eclose <- geeglm(prop_eclose ~ min_temp, 
+                          data = overwinter_dat_node2,
+                          id = brood_uid,
+                          corstr = "exchangeable",
+                          weights = total_insects,
+                          family = "binomial") 
+tidy_gee_eclose <- tidy(gee_eclose,
+                        conf.int = TRUE,
+                        exponentiate = FALSE)
+
+# For plotting
+gee_eclose_z <- zelig(prop_eclose ~ min_temp,
+                      data = overwinter_dat_node2,
+                      model = "logit.gee",
+                      id = "brood_uid",
+                      corstr = "exchangeable",
+                      weights = overwinter_dat_node2$total_insects,
+                      cite = FALSE)
+
+# For getting the actual values of parameters in a tidy format
+gee_emerge <- geeglm(prop_emerge ~ min_temp, 
+                          data = overwinter_dat_node2,
+                          id = brood_uid,
+                          corstr = "exchangeable",
+                          weights = total_insects,
+                          family = "binomial")
+tidy_gee_emerge <- tidy(gee_emerge,
+                        conf.int = TRUE,
+                        exponentiate = FALSE)
+
+# For plotting
+gee_emerge_z <- zelig(prop_emerge ~ min_temp,
+                      data = overwinter_dat_node2,
+                      model = "logit.gee",
+                      id = "brood_uid",
+                      corstr = "exchangeable",
+                      weights = overwinter_dat_node2$total_insects,
+                      cite = FALSE)
+
+# variation mintemp
+gee_varmintemp_emerge <- geeglm(prop_emerge ~ var_min_temp, 
+                          data = overwinter_dat_node2,
+                          id = brood_uid,
+                          corstr = "exchangeable",
+                          weights = total_insects,
+                          family = "binomial")
+tidy_gee_emerge_varmintemp <- tidy(gee_varmintemp_emerge,
+                        conf.int = TRUE,
+                        exponentiate = FALSE)
+
+
+gee_varmintemp_eclose <- geeglm(prop_eclose ~ var_min_temp, 
+                          data = overwinter_dat_node2,
+                          id = brood_uid,
+                          corstr = "exchangeable",
+                          weights = total_insects,
+                          family = "binomial")
+tidy_gee_eclose_varmintemp <- tidy(gee_varmintemp_eclose,
+                        conf.int = TRUE,
+                        exponentiate = FALSE)
+
+# Mean RH
+gee_RH_emerge <- geeglm(prop_emerge ~ mean_RH, 
+                          data = overwinter_dat_node2,
+                          id = brood_uid,
+                          corstr = "exchangeable",
+                          weights = total_insects,
+                          family = "binomial")
+tidy_gee_emerge_RH <- tidy(gee_RH_emerge,
+                        conf.int = TRUE,
+                        exponentiate = FALSE)
+
+
+gee_RH_eclose <- geeglm(prop_eclose ~ mean_RH, 
+                          data = overwinter_dat_node2,
+                          id = brood_uid,
+                          corstr = "exchangeable",
+                          weights = total_insects,
+                          family = "binomial")
+tidy_gee_eclose_RH <- tidy(gee_RH_eclose,
+                        conf.int = TRUE,
+                        exponentiate = FALSE)
+
+
+
+# Comparing DE site to the other sites
+aod_overwinter_dat <- overwinter_dat %>% 
+   filter(treatment2 != "DE", treatment2 != "Control")
+
+# GEE - not using glm above anymore. Cleanup later.
+treatment2_eclose_model <- geeglm(prop_eclose ~ treatment2,
+              data = aod_overwinter_dat,
+              weight = total_insects,
+              id = brood_uid, 
+              corstr = "exchangeable",
+              family = binomial)
+
+
+treatment2_eclose_posthoc <- emmeans::emmeans(treatment2_eclose_model,
+                                      list(pairwise ~ treatment2),
+                                      adjust = "tukey",
+                                      type = "response")
+
+# Conclusions of anova model doesn't change
+
+treatment2_emerge_model <- glmer(cbind(number_emg_sg, total_unemerged) ~ treatment2 +
+                          (1 | log_uid / brood_uid),
+              data = aod_overwinter_dat,
+              family = binomial)
+treatment2_emerge_anova <- car::Anova(treatment2_emerge_model)
+# Emergence model conclusion does change - sig diff between sites
+treatment2_emerge_model <- geeglm(
+   prop_emerge ~ treatment2,
+   data = aod_overwinter_dat,
+   weight = total_insects,
+   id = brood_uid,
+   corstr = "exchangeable",
+   family = binomial
+)
+
+treatment2_emerge_posthoc <- emmeans::emmeans(treatment2_emerge_model,
+                                      list(pairwise ~ treatment2),
+                                      adjust = "tukey",
+                                      type = "response")
+
+
+
+
+```
+
+**Tl;dr: A wasp we use to control populations of an invasive beetle in North America should be able to survive most winters in the northern range of locations it would be released. This is good, because it's potential ability to survive in the north is part of the reason it was selected as a biological control agent.**
+
+If you live in the eastern half of the United States and are a fan of trees, you've probably heard about emerald ash borer. This little jewel beetle is destroying ash trees here in the United States. It arrived in Michigan in the 1990s and was first detected in the early 2000s. It was most likely introduced on some solid wood packing material brought over from it's native range in eastern Asia. The beetle is an insidious killer, causing virtually 100% ash mortality in areas where it has spread to in North America. The beetle spends the majority of it's life feeding as a larva underneath the bark of ash trees, which makes it very difficult to detect early on. It is often not detected for several years, at which time ash trees will start to shows signs of infestation. At this point though, the beetle populations will be so large and spread out eradication is virtually impossible. 
+
+![Emerald ash borer is an invasive beetle destroying ash trees in North America. Image from Pennsylvania Department of Conservation and Natural Resources](eab.jpg){height=50% width=50%}
+
+One tool we have to combat the spread of this insect is a classical biological control program. Biological control (often abbreviated just as biocontrol) programs make use of, you may have guessed, biology to tackle pest issues. In this case, we're talking about using predators or parasites from the native range of emerald ash borer. You may recall learning about biocontrol in your high school biology class. Examples from the past where BIG mistakes were made in the judicious movement of predators to novel ecosystems are often used to highlight the danger of moving organisms around without considering how they'll interact with the organisms that live in the target destination. Cane toads released in Australia in the 1930s to deal with a cane beetle problem have become the pests, rather than dealing with the pests they were supposed to suppress. These toads are not specific predators; they eat many plantas and insects beyond just the cane beetle. We've learned a lot of lessons from these failed biocontrol attempts. In many places, including the US, any potential biocontrol agent has to go through extensive testing to show that it will not have off-target effects. In other words, they have to show that any native organisms related to the target pest will not be attacked by the biological control agent. 
+
+In the USA, four wasps native to eastern Asia that attack emerald ash borer have been tested and approved for release as part of the biocontrol program. These wasps are parasitoids, which are similar to parasites in that they live on a host organism, but parasitoids will always ultimately kill their host. These wasps are very small and do not sting humans. They cannot eradicate emerald ash borer but they (hopefully) will cause enough mortality to slow the growth of the beetle's populations, which in turn will slow its spread and how quickly trees in invaded areas die. This gives management agencies more time to react, as trees killed by this beetle need to be removed or important trees need to be identified and treated with insecticide injections. 
+
+![*Spathius galinae*, one of four parasitoid wasps used in the biological control program for emerald ash borer in North America. Image from Jian Duan (USDA-ARS Beneficial Insects Introduction Research Unit) - https://www.flickr.com/photos/usdagov/14053044929.](sgalinae.jpg)
+
+One of these wasps, *Spathius galinae*, was the focus of one of my dissertation chapters. This tiny wasp was the last of the four biological control agents to be approved for release in the US. It's currently being released in locations north of 40° latitude as a replacement for *Spathius galinae*, one of the other parasitoids. *Spathius galinae* populations were not performing well north of 40°, likely because the colder winters caused a mismatch in the development rate of this insect and emerald ash borer, so that it was not active when it would be most effective. *Spathius agrili* is from a colder region of eastern Asia in Russia, so should be better suited to the more northern climates. Some work has been done to see how well this insect will survive winters in the northeastern United States, but none had been done in the upper Midwest where winters can get extremely cold. I set out to answer that question. 
+
+![Release locations for *Spathius galinae* and *Spathius agrili* in the United States and Canada. Underlying map from Duan et al. 2018 Progress and Challenges of Protecting North American Ash Trees from the Emerald Ash Borer Using Biological Control](40th_parallel.jpg)
+
+Many insects native to areas where it gets cold in the winter have developed behavioral or physiological mechanisms to handle the cold, however they all have their limits. We wanted to know what temperatures would kill *Spathius galinae* so we could determine if there was anywhere in North America where the cold would limit its effectiveness. We started with some labortory experiments to get some baselines in a nice controlled environment.
+
+![The silicon chiller bath we used to control how quickly the insects were chilled.](chiller.jpg)
+
+*Spathius galinae* spend the winter in an immature form, known as a pre-pupae. We had some of these sent to us from a research lab where these insects are reared and we put them in the silicon chiller bath (pictured above). This bath allows us to cool the insects down to temperatures as low as -40 °F (although in practice, it has difficulty getting below -25 °F) at a controlled rate so we can observe them. The wires coming out of those test-tubes are thermocouples, which we use to measure the actual temperature of each insect. When we are cooling these insects, we choose a range of temperatures to cool them down to and we look for 'exotherms'. When the water freezes, it releases a little bit of heat which can be picked up by these thermocouples. This release of heat is called an exotherm. The exotherm is important to look for as it determines the insects 'supercooling point'. 
+
+![A discolored *Spathius galinae* prepupae. This one was killed b y the chilling process and became discolored. Normally, they're a nice creamy-white.](prepupae.jpg){width=50% height=50%}
+
+![When water freezes, it releases a bit of heat which can be picked up by our thermocouples. The insects in this image are shown freezing around -26 °C (-15 °F).](exotherm.jpg)
+
+I mentioned before that insects have evolved mechanisms for dealing with the cold and supercooling is one of those. Many insects produce anti-freeze compounds that prevent the water in their cells from freezing. Freezing water inside of cells is bad bad bad - it can rupture the cell walls and kill them. By supercooling their body liquids, some insects are able to survive sub-zero temperatures. (Many insects can supercool, but supercooling doesn't always save them. They can be killed via other pathways even if they don't freeze.) Insects that supercool and do not die before they freeze are termed 'chill tolerant'. Other insects are freeze tolerant; they are able to survive freezing. Measuring the supercooling point (when the insect freezes) and then transferring them to an environment where we can see if they'll resume development and living is a way to determine if an insect is freeze tolerant or not. By cooling them to a range of lower temperatures, we can also get a baseline for how many insects we would expect to survive given minimum temperatures in the winter.
+
+We measured both the distribution of supercooling points, which gives us an idea of what proportion of the population freezes at progressively lower temperatures, and then we looked at how many of the insects were able to complete development and emerge as adults after being chilled to this low temperature. (Aside: the insects were chilled to the designated low temperature, then immediately placed in a 0 °C (32 °F) container until we could move them to incubators. This is called a lower lethal temperature experiment; we're trying to find the lower temperature such that a brief exposure kills them. This is in contrast to a lower lethal time temperature, where an insect is held at a designated low temperature for various periods of time to see how longer exposures affect mortality. Both are measures of an insects cold tolerance, but we focused on lower lethal temperature for this part of the study.) We fit a logistic regression to the lower lethal temperature data as a model of what proportion of insects we would expect to become adults given exposure to a particular low temperature.
+
+```{r scp-plots, fig.cap="Distribution of supercooling points observed in larvae of *Spathius galinae* (*n* = 73) cooled in a silicon cooling bath.", include=TRUE}
+# Plot cumulative frozen and logistic regression
+scp_model_text <- substitute(logit(italic(y)) == a + b*italic(x),
+                            list(a = signif(coef(scp_logreg)[[1]], digits = 4),
+                                 b = signif(coef(scp_logreg)[[2]], digits = 3)))
+scp_model_text <- data.frame(
+   label = as.character(as.expression(scp_model_text))
+)
+cum_scp_p <- ggplot(scp_cdf, aes(x = est_scp, y = prop_unfrozen, weight = n)) +
+   geom_point() +
+   stat_smooth(method = "glm",
+               method.args = (family = "binomial"),
+               colour = "black") +
+   scale_x_reverse() +
+   labs(x = "Minimum exposure temperature (°C)", y = "Proportion of insects unfrozen") +
+   geom_text(data = scp_model_text,
+             aes(x = -23, y = 0.25, label = label),
+             parse = T,
+             size = 4,
+             inherit.aes = FALSE) +
+   theme_bw()
+
+
+scp_hist <- scp_llt_dat %>%
+   filter(est_scp < -18 & temp_pulled_grouped == -32) %>% 
+   ggplot(aes(est_scp)) +
+   geom_histogram(binwidth = 0.5,
+                  color = "black",
+                  fill = "grey") +
+   labs(y = "Frequency", x = "Estimated supercooling point (°C)") +
+   theme(axis.text = element_text(size = 12, colour = "black"),
+         axis.title = element_text(size = 12, colour = "black"),
+         axis.ticks.x = element_blank(),
+         axis.title.y = element_text(vjust = 1)) +
+   scale_x_reverse(labels = -20:-28,
+                   breaks = -20:-28) +
+   theme_bw()
+
+scp_hist_cum_scp_p <- scp_hist + cum_scp_p + plot_annotation(tag_levels = "A")
+scp_hist_cum_scp_p
+```
+
+
+
+```{r llt-plots, fig.cap="Probability that larvae of *Spathius galinae* (*n* = 427) would eclose after being cooled in the laboratory to a sub-zero temperature. Points are the Abbott corrected proportion of *S. galinae* that eclosed (1 = 100% eclosion, 0 = 0% eclosion) at a given temperature, while error bars are ± two standard errors. The solid line are predicted response rates from the models fit to these data.  The grey band represents the 95% confidence interval for the fitted line.", include=TRUE}
+
+a_discolor_text <- substitute(logit(italic(y)) == a + b*italic(x),
+                            list(a = round(coef(a_lab_discolor)[[1]], digits = 2),
+                                 b = round(coef(a_lab_discolor)[[2]], digits = 2)))
+a_discolor_text <- data.frame(
+   label = as.character(as.expression(a_discolor_text))
+)
+
+a_eclose_text <- substitute(logit(italic(y)) == a + b*italic(x),
+                            list(a = round(coef(a_lab_eclose)[[1]], digits = 2),
+                                 b = round(coef(a_lab_eclose)[[2]], digits = 2)))
+a_eclose_text <- data.frame(
+   label = as.character(as.expression(a_eclose_text))
+)
+
+a_discolor_p <- ggplot(abbott_scp, aes(x = temp_pulled, y = abbott0_normal_color)) +
+   geom_point() +
+   geom_errorbar(aes(x = temp_pulled,
+                  ymin = lwr_0_norm_color,
+                  ymax = upr_0_norm_color)) +
+   labs(x = "Minimum tempe pulled °C",
+        y = "Proportion of insects normally colored")+
+   geom_line(data = a_discolor_df, aes(x = temp_pulled, y = fit), colour = "black") +
+   geom_ribbon(data = a_discolor_df,
+             aes(x = temp_pulled, ymin = lwr, ymax = upr), 
+             alpha = 0.4, fill = "grey",
+             inherit.aes = FALSE) +
+   geom_text(data = a_discolor_text,
+             aes(x = -12, y = 0.20, label = label),
+             parse = T,
+             size = 4.5,
+             inherit.aes = FALSE) +
+   scale_x_reverse() +
+   scale_y_continuous(limits = c(0, 1)) +
+   theme_bw()
+ 
+
+a_eclose_p <- ggplot(abbott_scp, aes(x = temp_pulled, y = abbott0_eclose)) +
+   geom_point() +
+   geom_errorbar(aes(x = temp_pulled,
+                  ymin = lwr_0_eclose,
+                  ymax = upr_0_eclose)) +
+   labs(x = "Minimum temp pulled °C",
+        y = "Proportion of insects eclosing")+
+   geom_line(data = a_eclose_df, aes(x = temp_pulled, y = fit), colour = "black") +
+   geom_ribbon(data = a_eclose_df,
+             aes(x = temp_pulled, ymin = lwr, ymax = upr), 
+             alpha = 0.4, fill = "grey",
+             inherit.aes = FALSE) +
+   scale_x_reverse() +
+   geom_text(data = a_eclose_text,
+             aes(x = -12, y = 0.20, label = label),
+             parse = T,
+             size = 4.5,
+             inherit.aes = FALSE) +
+   theme_bw()
+ 
+abbott_plots <- a_eclose_p 
+
+abbott_plots
+```
+
+
+Sweet! We have a nice cumulative freezing curve - we can see that about 50% of the population is expected to freeze at about -25 °C (-13 °F) (remember, freezing doesn't necessarily equal death. We're looking to see if any of these insects that froze will continue to develop). The resulting data are kind of messy (why such a low proportion emerging at around -6 °C? Why so many surviving at -30 °C?), but we see a clear trend that as temperatures drop, more and more of the insects are dying as they don't finish development. What isn't clear from this graph though is that a few of the insects that did freeze did survive - we'll come back to that later. 
+
+For the second part of this study, we went out to the field to see how the insects would fare in the real world. We took some ash log sections which contained emerald ash borer under the bark that had been parasitized by *Spathius galinae* out to three locations in Minnesota: the University of Minnesota campus in Saint Paul, a research station in the west central part of the state near Morris, MN and further south of Saint Paul near Waseca, MN. We placed half our logs at each location under the snow to provide them with a more stable and insulated environment and tied the other half to the trunk of trees above the snowline. We left them out over the winter of 2019-2020 to be exposed to the elements! We were going to come back in May 2020 to grab them, but due to the brand new covid-19 pandemic and upcoming University travel restrictions, we went out in early March to collect them. Winter in Minnesota doesn't really end until late April, so that was unfortunate but they still were exposed to some pretty cold temperatures as we had a polar vortex event in December 2019. In addition to our sites in Minnesota, we had a control group out in Delaware where our insects were reared that were left in an open-air insectary. This group was exposed to much warmer winter temperatures. In the following graph, you can see the temperatures we recorded above and below the snow at each site.
+
+
+```{r hobo-dat}
+hobo_dat <- read_csv("data/cleaned_hobo_dat.csv") %>%
+   separate(location, into = c("site", "treatment"), remove = FALSE)
+DE_dat <- filter(hobo_dat, site == "DE")
+DE_dat <- DE_dat[seq(2, nrow(DE_dat), by = 2), ]
+hobo_dat <- hobo_dat %>% 
+   filter(site != "DE") %>% 
+   bind_rows(., DE_dat)
+# Think about fitting a model to get CI estimates
+hobo_dat <- hobo_dat %>% 
+   filter(!str_detect(location, "incubator") &
+          date_time_true > as.Date("2019-12-18") &
+             date_time_true < as.Date("2020-03-25")) %>%
+   mutate(treatment = case_when(site == "DE" ~ "DE",
+                                TRUE ~ treatment)) %>% 
+   group_by(site, treatment) %>% 
+   mutate(time = 1:n()) %>% 
+   ungroup() %>% 
+   pivot_wider(names_from = treatment,
+               values_from = temp_C) 
+
+hobo_plot_dat <- hobo_dat %>% 
+   group_by(time) %>% 
+   summarise(across(Air:DE, ~mean(.x, na.rm = TRUE))) %>% 
+   pivot_longer(cols = Air:DE, names_to = "treatment", values_to = "temp_C") %>% 
+   mutate(treatment = case_when(treatment == "DE" ~ "Air (DE)",
+                                treatment == "Air" ~ "Air (MN)",
+                                treatment == "Snow" ~ "Under Snow (MN)"))
+
+# Add back on a date time column
+hobo_plot_dat <- hobo_dat %>% 
+   filter(location == "UMN_Air") %>% 
+   select(date_time_true, time) %>% 
+   left_join(hobo_plot_dat, by = "time")
+
+# The palette with black:
+cbbPalette <- c("#000000", "#D55E00", "#56B4E9", "#009E73", "#F0E442", "#0072B2",  "#CC79A7")
+```
+
+```{r hobo-graph, include = TRUE, fig.cap="Time series of the average ambient temperature recorded near bolts placed at three sites in Minnesota underneath the snow, in the air above the snow, as well as one site in an open air insectary in Delaware. Temperatures were recorded from 16 December 2019 - 25 March 2020 by a HOBO data logger.", fig.width=6.7, fig.height = 5}
+hobo_plot <- hobo_plot_dat %>% 
+   ggplot(aes(x = date_time_true, y = temp_C, group = treatment, colour = treatment)) +
+   geom_line() +
+   #facet_wrap(treatment ~ ., ncol = 1)+
+   theme_bw() +
+   theme(axis.title = element_text(size = 14, colour = "black"),
+         axis.text = element_text(size = 12, colour = "black"),
+         axis.text.x = element_text(angle = 340, vjust = 0.2)) +
+   labs(y = "Temperature (°C)", x = "Date", colour = "Treatment") +
+   scale_color_manual(values = cbbPalette) +
+   scale_x_datetime(date_breaks ="2 weeks") +
+   scale_linetype_manual(values = c("dotted", "solid", "dashed"))
+
+hobo_plot
+
+```
+
+Once we collected the logs, we took them back to the lab and threw them in incubators to let the insects develop and emerge. We had some concerns that the wood dried out over the winter, since it wasn't part of a living tree, and this would make it difficult for any new adults to chew their way out from underneath. To address that concern, we let the logs sit for a few weeks to let any adults emerge that would emerge, then we scraped away the bark to look for prepupae that died over the winter and prepupae that had successfully developed to the adult form but were unable to emerge from the log. We fit two logistic regression models using the proportion that eclosed (fancy word for completed development) and the proportion that emerged from the logs as our response variable and temperature as the predictor. We originally included whether they were under snow or above the snow, but this term was not statistically significant so it was dropped from the model (not to mention, heavily correlated with temperature). These models are actually generalized estimating equations, which are one method for handling data that are correlated. These models allow you to specify a correlation structure for the data, to ensure that our variance estimates aren't too narrow. Because each *Spathius galinae* lays multiple offspring on a single emerald ash borer (these groups of offspring are called a 'brood'), we would expect the fate of each larvae in a brood to be correlated with the other larvae in the brood. So we include an exchangeable correlation structure in our variance to capture that structure in the data:
+
+$$
+var(Y_i) = \sigma^2\begin{bmatrix} 
+1 & \rho & ... & \rho \\
+\rho & 1 & ... & \rho \\
+\rho & \rho & ... & \rho \\
+\rho & \rho & ... & 1\\
+\end{bmatrix}
+$$
+
+An exchangeable correlation structure lets us assume that all larvae within a brood are equally correlated and no one brood is more or less correlated than any other. Generalized estimating equations have the benefit of being marginal models, and so we're marginalizing over the variation due to individual broods (as in, genetics) and estimating a population level response to cold. 
+
+```{r overwinter-prop, include=TRUE, tab.id="overwinter-prop", tab.cap="Proportion of *Spathius galinae* eclosing or emerging after overwintering from 16 December 2019 -- 25 March 2020 at three locations in Minnesota and in Delaware. Larvae in Minnesota either overwintered in bolts underneath the snow or tied at breast height to a tree trunk and exposed to the ambient air. The sample size used in calculating each proportion is listed in parenthesis."}
+overwinter_prop_table <- overwinter_dat %>%
+   pivot_wider(
+      names_from = treatment,
+      values_from = c(total_adults, total_insects, number_emg_sg)
+   ) %>%
+   filter(site != "Shipping") %>% 
+   group_by(site) %>%
+   summarise(
+      prop_survive_snow = sum(total_adults_Snow, na.rm = TRUE) / sum(total_insects_Snow, na.rm = TRUE),
+      prop_emerged_snow = sum(number_emg_sg_Snow, na.rm = TRUE) / sum(total_insects_Snow, na.rm = TRUE),
+      prop_survive_air = sum(total_adults_Air, na.rm = TRUE) / sum(total_insects_Air, na.rm = TRUE),
+      prop_emerged_air = sum(number_emg_sg_Air, na.rm = TRUE) / sum(total_insects_Air, na.rm = TRUE),
+      n_surv_snow = sum(total_insects_Snow, na.rm = TRUE),
+      n_emerged_snow = sum(total_insects_Snow, na.rm = TRUE),
+      n_surv_air = sum(total_insects_Air, na.rm = TRUE),
+      n_emerged_air = sum(total_insects_Air, na.rm = TRUE)
+   ) %>%
+   # To get the order right, wil lchange names later
+   arrange(site) %>% 
+   mutate(site = case_when(site == "DE" ~ "Newark, DE",
+                           site == "Morris" ~ "Morris, MN",
+                           site == "UMN" ~ "St. Paul, MN",
+                           site == "Waseca" ~ "Waseca, MN",
+                           TRUE ~ site)) %>% 
+   # This next one is a mess.
+   # Add the sample size in parentheses.
+   mutate(
+      prop_survive_snow = case_when(
+             prop_survive_snow <= 1 ~ paste0(round(prop_survive_snow, 2),
+                                         " (",
+                                         n_surv_snow, ")"),
+             TRUE ~ "-"),
+      prop_emerged_snow = case_when(
+             prop_emerged_snow <= 1 ~ paste0(round(prop_emerged_snow, 2),
+                                         " (",
+                                         n_emerged_snow, ")"),
+             TRUE ~ "-"),
+      prop_survive_air = case_when(
+             prop_survive_air <= 1 ~ paste0(round(prop_survive_air, 2),
+                                         " (",
+                                         n_surv_air, ")"),
+             TRUE ~ "-"),
+      prop_emerged_air = case_when(
+             prop_emerged_air <= 1 ~ paste0(round(prop_emerged_air, 2),
+                                         " (",
+                                         n_emerged_air, ")"),
+             TRUE ~ "-"),
+      ) %>% 
+   select(-contains("n_")) %>% 
+   flextable() %>% 
+   set_header_labels(site = "Location",
+                     prop_survive_snow = "Under Snow",
+                     prop_emerged_snow = "Under Snow",
+                     prop_survive_air = "Air",
+                     prop_emerged_air = "Air") %>% 
+   merge_at(i = 1, j = 2:3, part = "header") %>% 
+   merge_at(i = 1, j = 4:5, part = "header") %>% 
+   add_header_row(values = c("",
+                             "Proportion Eclosed",
+                             "Proportion Emerged",
+                             "Proportion Eclosed",
+                             "Proportion Emerged"),
+                  top = FALSE) %>% 
+   align(i = 1, align = "center", part = "header") %>%  # Align header
+   align(j = 1, align = "center", part = "body") %>%  # Align left column
+   align(j = 2:5, align = "center", part = "body") %>%  # Align the rest
+   width(j = 1, width = 1.1) %>% 
+   width(j = 2:5, width = 0.8) %>% 
+   font(fontname = "Times New Roman", part = "all") %>% 
+   footnote(i = 2, j = 1,
+            value = as_paragraph("A small group of bolts that were shipped to Minnesota was placed immediately at 25°C (70% RH). Of the 177 larvae present in these segments, 98% eclosed and 72% emerged."),
+            ref_symbols = c("a"))
+
+overwinter_prop_table
+   
+```
+
+In the graphs below we can see how our insects fared. As expected, we see fewer insects emerging and developing the colder it got. It looks like about -30 °C is approaching the lower limit of survival for these insects. Interestingly, there were a few insects that were able to complete development at that low temperature (although they did not actually emerge from the logs). Given that those insects likely froze and still survived, this suggests that there may be variation in the population of wasps that allows for different strategies to tolerate the winter! Most of the insects appear to be chill tolerant (or freeze intolerant, as they die after freezing), but there may be some subset that is freeze tolerant. This is pretty exciting and a cool avenue for future work would be further testing to see if this is actually true.
+
+
+
+```{r overwinter-llt-eclose, cache=TRUE, include = TRUE, fig.cap="Relationship between the probability of eclosing (A) or emerging from underneath the bark (B) for *Spathius galinae* (*n* = 558) and the lowest temperature experienced over the winter of 2019 - 2020. Larvae were overwintering in bolts under the snow or tied to a treek trunk above the snowline in Minnesota, USA. Open points are the proportion of each brood that eclosed (A) or emerged (B) and have been jittered to facilitate viewing. Solid black points are the overall proportion of *S. galinae* eclosing (A) or emerging (B) at a given temperature, while error bars are ± one standard error. The solid line is the fitted population model. Grey bands represent 95% confidence interval for the fitted line."}
+
+conflicted::conflict_prefer("expand", "tidyr")
+f_eclose_text <- substitute(logit(italic(y)) ==  a + b*italic(x),
+                            list(a = formatC(tidy_gee_eclose$estimate[1], digits = 2),
+                                 b = round(tidy_gee_eclose$estimate[2], digits = 2)))
+f_eclose_text <- data.frame(
+   label = as.character(as.expression(f_eclose_text))
+)
+
+f_emerge_text <- substitute(logit(italic(y)) ==  a + b*italic(x),
+                            list(a = formatC(tidy_gee_emerge$estimate[1], digits = 2),
+                                 b = round(tidy_gee_emerge$estimate[2], digits = 2)))
+f_emerge_text <- data.frame(
+   label = as.character(as.expression(f_emerge_text))
+)
+
+
+pred_dat_emerge <- setx(gee_emerge_z, min_temp = seq(-12, -30, length.out = 1000))
+gee_emerge_ci <- Zelig::sim(gee_emerge_z, x = pred_dat_emerge) %>% 
+   zelig_qi_to_df() %>% 
+   qi_slimmer(qi_type = "ev", ci = 0.95)
+
+
+# GEE predictions 
+pred_dat_eclose <- setx(gee_eclose_z, min_temp = seq(-12, -30, length.out = 1000))
+gee_eclose_ci <- Zelig::sim(gee_eclose_z, x = pred_dat_eclose) %>% 
+   zelig_qi_to_df() %>% 
+   qi_slimmer(qi_type = "ev", ci = 0.95)
+
+field_eclose_plot <- ggplot() +
+   geom_line(data = gee_eclose_ci,
+             aes(x = temp_fitted.u..., y = qi_ci_median),
+             size = 1.05) +
+   geom_ribbon(data = gee_eclose_ci,
+               aes(x = temp_fitted.u..., ymin = qi_ci_min, ymax = qi_ci_max),
+               fill = "grey",
+               alpha = 0.25,
+               inherit.aes = FALSE) +
+   geom_point(data = overwinter_temp_sum,
+              aes(x = min_temp, y = prop_survive),
+              size = 2,
+              inherit.aes = FALSE) +
+   geom_errorbar(data = overwinter_temp_sum,
+                 aes(x = min_temp,
+                     ymin = prop_survive - 1.96 * se_prop_survive,
+                     ymax = ifelse(prop_survive + 1.96 * se_prop_survive > 1, 1,
+                                   prop_survive + 1.96 * se_prop_survive)),
+                 width = 0.5,
+                 inherit.aes = FALSE) +
+   geom_jitter(data = overwinter_dat_node, # individual points
+            aes(x = min_temp, y = prop_success),
+            pch = 21,
+            size = 0.9,
+            width = 0.15,
+            height = 0.02) +
+   labs(x = "Temperature (°C)", y = "Proportion completing development \n") +
+   scale_x_reverse(limits = c(-12, -30.5)) +
+   scale_y_continuous(breaks = seq(0, 1, by = 0.25)) +
+   annotate(
+      "text",
+      x = -19, y = 0.23,
+      label = f_eclose_text$label,
+      parse = T,
+      size = 4.5,
+      inherit.aes = FALSE
+   )
+
+field_emerge_plot <- ggplot() +
+   geom_line(data = gee_emerge_ci,
+             aes(x = temp_fitted.u..., y = qi_ci_median),
+             size = 1.05,
+             inherit.aes = FALSE) +
+   geom_ribbon(data = gee_emerge_ci,
+               aes(x = temp_fitted.u..., ymin = qi_ci_min, ymax = qi_ci_max),
+               fill = "grey",
+               alpha = 0.25,
+               inherit.aes = FALSE) +
+   geom_point(data = overwinter_temp_sum,
+              aes(x = min_temp,
+                  y = prop_emerged),
+              size = 2,
+              inherit.aes = FALSE) +
+   geom_errorbar(data = overwinter_temp_sum,
+                 aes(x = min_temp,
+                     ymin = prop_emerged - 1.96 * se_emerged,
+                     ymax = prop_emerged + 1.96 * se_emerged),
+                 width = 0.5,
+                 inherit.aes = FALSE) +
+      geom_jitter(data = overwinter_dat_node, # individual points
+               aes(x = min_temp, y = prop_emerge),
+               pch = 21,
+               size = 0.9,
+               width = 0.15,
+               height = 0.02) +
+   labs(x = "Temperature (°C)", y = "Proportion emerging from logs \n") +
+   scale_x_reverse(limits = c(-12, -30)) +
+   scale_y_continuous(limits = c(0, 1)) +
+   annotate(
+      "text",
+      x = -23, y = 0.77,
+      label = f_emerge_text$label,
+      parse = T,
+      size = 4.5
+   )
+
+field_eclose_plot + field_emerge_plot
+```
+
+
+The final part of this project was to use the models we developed to produce predictions of survival! I pulled minimum winter temperatures rasters for two winters: a relatively mild winter (2017-2018 winter) and a relatively severe winter, with a polar vortex event (2013-2014 winter). Then I fed those temperatures into the models we produced both from the lab and the field to predict how many insects would complete development (aka eclose) and how many would remain unfrozen. The predictions are restricted to the range of ash in North America, as you can't have *Spathius galinae* without emerald ash borer and you can't have emerald ash borer without ash. 
+
+```{r setup-maps-1, cache=FALSE, include=FALSE}
+# Load processed rasters
+# Each of these is a nested list. list[[tree_spp]][[month]]
+
+winter_2013_2014 <- raster("data/processed_rasters/wc_winter_2013_2014.nc")
+
+winter_2017_2018 <- raster("data/processed_rasters/wc_winter_2017_2018.nc")
+
+
+# Get shapefiles
+na_sf <- readRDS("data/processed_rasters/na_sf_polygons.RDS")
+
+# Convert to data.frame and set up for predictions
+winter_2013_2014 <- data.frame(rasterToPoints(winter_2013_2014))
+names(winter_2013_2014) <- c("x",
+                             "y",
+                             "min_temp")
+winter_2013_2014$est_scp <- winter_2013_2014$temp_pulled <- winter_2013_2014$min_temp
+winter_2013_2014$brood_uid <- 1
+winter_2013_2014$log_uid <- 1
+winter_2013_2014$site <- 1
+
+winter_2017_2018 <- data.frame(rasterToPoints(winter_2017_2018))
+names(winter_2017_2018) <- c("x",
+                             "y",
+                             "min_temp")
+winter_2017_2018$est_scp <- winter_2017_2018$temp_pulled <- winter_2017_2018$min_temp
+winter_2017_2018$brood_uid <- 1
+winter_2017_2018$log_uid <- 1
+winter_2017_2018$site <- 1
+
+# Supercooling point predictions
+scp_2013_2014 <- predict(scp_logreg,
+                         newdata = winter_2013_2014,
+                         type = "response")
+
+scp_2017_2018 <- predict(scp_logreg,
+                         newdata = winter_2017_2018,
+                         type = "response")
+
+# Lab model predictions
+llt_2013_2014 <- predict(a_lab_eclose,
+                         newdata = winter_2013_2014,
+                         type = "response")
+llt_2017_2018 <- predict(a_lab_eclose,
+                         newdata = winter_2017_2018,
+                         type = "response")
+# Field model predictions
+
+preds_2013_2014 <- predict(gee_eclose,
+                              newdata = winter_2013_2014,
+                              type = "response")
+preds_2017_2018 <- predict(gee_eclose,
+                           newdata = winter_2017_2018,
+                           type = "response")
+
+
+
+winter_2013_2014 <- bind_cols(winter_2013_2014,
+                              preds_2013_2014,
+                              scp_2013_2014,
+                              llt_2013_2014) %>% 
+   rename(field = ...9,
+          scp = ...10,
+          llt = ...11)
+
+win_severe_long <- pivot_longer(winter_2013_2014,
+                                cols = c(field, scp, llt),
+                                names_to = "pred_type",
+                                values_to = "predictions")
+
+
+
+winter_2017_2018 <- bind_cols(winter_2017_2018,
+                              preds_2017_2018,
+                              scp_2017_2018,
+                              llt_2017_2018) %>% 
+   rename(field = ...9,
+          scp = ...10,
+          llt = ...11)
+
+win_mild_long <- pivot_longer(winter_2017_2018,
+                              cols = c(field, scp, llt),
+                              names_to = "pred_type",
+                              values_to = "predictions")
+
+
+# Faceting plots
+winter_map_df <- bind_rows(mild = win_mild_long,
+                           severe = win_severe_long,
+                           .id = "winter_type") %>% 
+   mutate(pred_type = factor(pred_type,
+                             levels = c("llt", "field", "scp"),
+                             labels = c("Proportion of *S. galinae* eclosing (lab)",
+                                        "Proportion of *S. galinae* eclosing (field)",
+                                        "Proportion of *S. galinae* unfrozen")),
+          winter_type = case_when(winter_type == "mild" ~ "Mild winter",
+                                  winter_type == "severe" ~ "Severe winter"))
+
+# Function for adding plot labels
+tag_facet <- function(p, open = "(", close = ")", tag_pool = letters, x = -Inf, y = Inf, 
+                      hjust = -0.5, vjust = 1.5, fontface = 2, family = "", ...) {
+
+  gb <- ggplot_build(p)
+  lay <- gb$layout$layout
+  tags <- cbind(lay, label = paste0(open, tag_pool[lay$PANEL], close), x = x, y = y)
+  p + geom_text(data = tags, aes_string(x = "x", y = "y", label = "label"), ..., hjust = hjust, 
+                vjust = vjust, fontface = fontface, family = family, inherit.aes = FALSE) 
+}
+
+winter_p <- ggplot(winter_map_df) +
+   geom_tile(data = winter_map_df, aes(x = x, y = y, fill = predictions)) +
+   theme_nothing(legend = TRUE) +
+   coord_fixed(ratio = 1.3) +
+   scale_fill_viridis(
+      direction = -1,
+      limits = c(0.0, 1.0),
+      name = expression(atop(
+         paste("Percent of ", italic("S. galinae "), "unfrozen or eclosing")
+      ))
+   ) +
+   geom_sf(
+      data = na_sf,
+      fill = NA,
+      color = "black"
+   ) +
+   facet_grid(rows = vars(winter_type),
+              cols = vars(pred_type),
+              switch = "y") +
+   theme(
+      legend.title.align = 0,
+      axis.line = element_blank(),
+      legend.position = "bottom",
+      panel.border = element_blank(),
+      strip.text = element_markdown(),
+      #plot.margin = unit(rep(0.1, 4), "mm"),
+      strip.background = element_rect(fill = NA, colour = NA)
+   ) 
+my_tag <- c("A", "C",
+            "E", "B",
+            "D", "F")
+
+```
+
+
+
+
+```{r map-severe-winter, include=TRUE, fig.height=5.5, fig.width=9, fig.cap = "Predictions and confidence intervals of the percent of *S. galinae* that will eclose or initiate freezing based on minimum winter temperatures. Figures A - C display the lower 95% confidence interval prediction, predicted value, and the upper 95% confidence interval prediction, respectively, for a winter with relatively mild minimum temperaures (2017 - 2018), while figures D - F represent the same values for a winter with extreme minimum temperatures due to a polar vortex (2013 - 2014)."}
+
+
+winter_p <- tag_facet(winter_p, 
+          x = -Inf,
+          hjust = -1.5,
+          open = "",
+          close = "",
+          tag_pool = my_tag)
+winter_p
+
+```
+
+
+We used all three models because each measures a slightly different thing and it allows us to account for the experimental uncertainty inherent to this system. The models of eclosion produced from the lab are our most optimistic models, predicting high survival under even relatively cold temperatures. The field model for eclosion is slightly less optimistic, but we still see survival in even the coldest areas. The right-most column of maps shows us how many insects we would expect to freeze based on those measured exotherms, and even though we see 100% freezing in the far north, our results suggest some proportion of the insects should survive temperatures this cold.
+
+Of course, emerald ash borer is also an insect and is also adversely affected by these cold temperatures! Other work has shown that emerald ash borer at least as cold tolerant as *Spathius galinae*, and maybe a bit more. This means that even if *Spathius galinae* has a harder time in the colder areas, emerald ash borer will too. Releases of the wasp can be focused in areas that aren't at the extreme edges and we should expect good performance across most of the northern range of ash in North America!
+
+
+
+
+<!--------------- appendices ----------------->
+
+
+
+

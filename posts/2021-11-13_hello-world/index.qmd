@@ -1,0 +1,55 @@
+---
+title: "Hello world!" # <---- UPDATE ME
+description:
+  Just here to kick the tires # <---- UPDATE ME
+author:
+  - name: Jake Wittman
+    url: https://wittja01.github.io/personal_website/
+date: 2021-11-13
+image: headshot.png
+citation_url: https://wittja01.github.io/personal_website/hello-world 
+repository_url: https://github.com/wittja01/personal_website
+params:
+  slug: hello-world
+  date: 2021-11-13
+  repo: wittja01/personal_website
+  site: https://wittja01.github.io/personal_website
+---
+
+```{=html}
+<!----
+
+checklist:
+  - check the "update me" messages in YAML above
+  - initialise the _renv folder with refinery::renv_new("name of post folder")
+  - populate the lockfile with refinery::renv_snapshot("name of post folder")
+  - update the _renv folder from snapshot with refinery::restore("name of post folder")
+
+---->
+```
+<!--------------- setup post ----------------->
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+
+```
+
+<!--------------- post ----------------->
+
+Hello! This is my blog, I guess? I don't anticipate I will be blogging here often. I thought it would be useful, however, to have this set up in the event I do want to blog about stuff! While I'm here I'm going to test some of the R code functionality.
+
+```{r}
+library(dplyr)
+library(ggplot2)
+library(magrittr)
+mtcars %>% 
+  group_by(cyl) %>% 
+  summarise(avg_mpg = mean(mpg))
+```
+
+```{r}
+ggplot(mtcars, aes(x = hp, y = mpg, colour = cyl)) +
+  geom_point() +
+  scale_color_viridis_c()
+```
