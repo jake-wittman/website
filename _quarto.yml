@@ -8,10 +8,10 @@ name: "personal_website2"
 description: |
   This is my website
 output_dir: _site
-base_url: https://wittja01.github.io/personal_website/
+base_url: https://wittja01.github.io/website/
 website:
    title: "Jake Wittman"
-   navbar: 
+   navbar:
       right:
           - text: "Home"
             href: index.html
@@ -23,5 +23,5 @@ website:
             href: cv.html
           - text: 'GitHub'
             href: https://github.com/wittja01
-execute: 
+execute:
   freeze: auto

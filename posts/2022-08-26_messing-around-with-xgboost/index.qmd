@@ -1,18 +1,18 @@
 ---
-title: "Generative Art! Part 1" # <---- UPDATE ME
+title: "Messing around with XGBoost" # <---- UPDATE ME
 description:
-  Working through Danielle Navarro's workshop on generative art # <---- UPDATE ME
+  I've been reading about XGBoost and wanted to take it for a ride # <---- UPDATE ME
 author:
   - first_name: "Jake"
     last_name: "Wittman"
     url: https://wittja01.github.io/website/
-date: 2022-08-19
-image: preview.jpg  # <---- UPDATE ME 
+date: 2022-08-26
+#image: preview.jpg  # <---- UPDATE ME 
 license: CC BY
 repository_url: https://github.com/wittja01/website
 params:
-  slug: generative_art_1
-  date: 2022-08-19
+  slug: messing-around-with-xgboost
+  date: 2022-08-26
   repo: wittja01/website
   site: https://wittja01.github.io/website
 draft: false

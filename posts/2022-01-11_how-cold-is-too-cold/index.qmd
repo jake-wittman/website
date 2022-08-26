@@ -13,8 +13,8 @@ repository_url: https://github.com/wittja01/website
 params:
   slug: how-cold-is-too-cold
   date: 2022-01-11
-  repo: wittja01/personal_website
-  site: https://wittja01.github.io/personal_website
+  repo: wittja01/website
+  site: https://wittja01.github.io/website
 ---
 
 <!----
