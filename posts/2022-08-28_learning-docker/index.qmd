@@ -1,0 +1,67 @@
+---
+title: "Docker notes" # <---- UPDATE ME
+description:
+  Not a full blog post, mostly just my own notes.Learning how to use docker for professional reasons and for my Plex server. # <---- UPDATE ME
+author:
+  - first_name: "Jake"
+    last_name: "Wittman"
+    url: https://wittja01.github.io/website/
+date: 2022-08-28
+image: preview.jpg
+license: CC BY
+categories: docker, notes
+repository_url: https://github.com/wittja01/website
+params:
+  slug: learning-docker
+  date: 2022-08-28
+  repo: wittja01/website
+  site: https://wittja01.github.io/website
+draft: false
+---
+
+<!----
+Use 
+refinery::use_article_template(
+    template = "_templates/standard_template.Rmd",
+    slug = "how-cold-is-too-cold", 
+    date = "2022-01-11",
+    renv_new = TRUE
+)
+to generate new post
+
+checklist:
+  - check the "update me" messages in YAML above
+  - initialise the _renv folder with refinery::renv_new("name of post folder")
+  - populate the lockfile with refinery::renv_snapshot("name of post folder")
+  - update the _renv folder from snapshot with refinery::restore("name of post folder")
+
+---->
+
+
+<!--------------- setup post ----------------->
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+```
+
+
+<!--------------- post ----------------->
+
+I want to learn how to use docker, since it seems like a really important technology to understand as a data scientist. I also happen to have a Plex server, which is currently running on my main PC. At some point in the near future, I'd like to get it set up on it's own machine and use a series of docker containers to run all my different programs.The purpose of this blog post is mostly for myself - I'm using it as a place to store some notes I'll make that I can reference later. For reference, I am using [this tutorial](https://docker-curriculum.com/#sf-food-trucks).
+
+Useful docker commands:
+`docker run -it CONTAINER sh` Opens an interactive terminal in the container
+`docker rm ID` - removes a container. Leaving empty containers littering your hard drive eats up space. 
+`docker rm $(docker ps -a -q -f status=exited)` Useful for removing all exited containers. `-q` flag returns only numeric IDs and `-f` filters output based on conditions.
+`docker container prune` I guess this is available in later version instead of the previous one to remove all stopped containers
+`docker run --rm` removes a container once it is exited
+`docker rmi` Delete images no longer needed
+`docker ps -a` see all exited containers (I think)
+`docker -d -P --name name` -d detaches terminal from container (so we can close terminal and container still runs), -P published exposed ports, and --name name lets us name our container "name"
+`docker run -p 8888:80 prakhar1989/static-site` will let you specify a custom port to which client will forward connections to the container.
+`docker port static-site` lets you see what port is being used
+`docker network create nameofnetwork-net` create a bridge network, I believe
+`docker run -d --name NAME --net nameofnetwork-net -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" docker.sometotherstuff` not 100% sure what all of this is doing. --net tells the container to start in a network. Not sure what -e is.
+
+Also - I should check out Docker Compose at some point, as I think that'll be useful for my Plex Server. It basically should allow me to set up a single file to start all the relevant apps up in their own containers.
