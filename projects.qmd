@@ -6,6 +6,16 @@ description: |
 
 Please reach out to me if you are interested in copies of my academic papers. My contact information is available on my CV.
 
+## Work Projects
+
+### Hotspot analysis of the prevalence of diabetes at the census-tract level in the USA
+
+I'll update this as I am able, please reach out if you'd like to learn more about this work in the meantime.
+
+### Trends in ADA recommended preventive care practices from 2008 - 2020 in the USA
+
+I'll update this as I am able, please reach out if you'd like to learn more about this work in the meantime.
+
 ## PhD projects
 
 After finishing my MSc, I stuck around at the University of Minnesota to complete a PhD in Forest Entomology with a graduate minor in Biostatistics. My PhD has focused on answering questions pertaining to the management of emerald ash borer, an invasive wood boring beetle in North America that is killing all of our ash trees.
