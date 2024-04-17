@@ -5,17 +5,17 @@ description:
 author:
   - first_name: "Jake"
     last_name: "Wittman"
-    url: https://wittja01.github.io/website/
+    url: https://jake-wittman.github.io/website/
 date: 2022-01-12
 image: ld.jpg  # <---- UPDATE ME 
 license: CC BY
-citation_url: https://wittja01.github.io/website/you-are-what-you-eat 
-repository_url: https://github.com/wittja01/website
+citation_url: https://jake-wittman.github.io/website/you-are-what-you-eat 
+repository_url: https://github.com/jake-wittman/website
 params:
   slug: you-are-what-you-eat
   date: 2022-01-12
-  repo: wittja01/website
-  site: https://wittja01.github.io/website
+  repo: jake-wittman/website
+  site: https://jake-wittman.github.io/website
 ---
 
 <!----

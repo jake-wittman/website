@@ -4,16 +4,16 @@ description:
   Just here to kick the tires # <---- UPDATE ME
 author:
   - name: Jake Wittman
-    url: https://wittja01.github.io/website/
+    url: https://jake-wittman.github.io/website/
 date: 2021-11-13
 image: headshot.png
-citation_url: https://wittja01.github.io/website/hello-world 
-repository_url: https://github.com/wittja01/website
+citation_url: https://jake-wittman.github.io/website/hello-world 
+repository_url: https://github.com/jake-wittman/website
 params:
   slug: hello-world
   date: 2021-11-13
-  repo: wittja01/website
-  site: https://wittja01.github.io/website
+  repo: jake-wittman/website
+  site: https://jake-wittman.github.io/website
 ---
 
 ```{=html}

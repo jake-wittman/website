@@ -5,17 +5,17 @@ description:
 author:
   - first_name: "Jake"
     last_name: "Wittman"
-    url: https://wittja01.github.io/website/
+    url: https://jake-wittman.github.io/website/
 date: 2022-08-28
 image: preview.jpg
 license: CC BY
 categories: docker, notes
-repository_url: https://github.com/wittja01/website
+repository_url: https://github.com/jake-wittman/website
 params:
   slug: learning-docker
   date: 2022-08-28
-  repo: wittja01/website
-  site: https://wittja01.github.io/website
+  repo: jake-wittman/website
+  site: https://jake-wittman.github.io/website
 draft: false
 ---
 

@@ -4,17 +4,17 @@ description:
   Or how I determined what minimum temperature would kill a parasitoid wasp we use to control the invasive beetle emerald ash borer
 author:
   - name: Jake Wittman
-    url: https://wittja01.github.io/website/
+    url: https://jake-wittman.github.io/website/
 date: 2022-01-11
 image: sgalinae.jpg  # <---- UPDATE ME 
 license: CC BY
-citation_url: https://wittja01.github.io/website/how-cold-is-too-cold 
-repository_url: https://github.com/wittja01/website
+citation_url: https://jake-wittman.github.io/website/how-cold-is-too-cold 
+repository_url: https://github.com/jake-wittman/website
 params:
   slug: how-cold-is-too-cold
   date: 2022-01-11
-  repo: wittja01/website
-  site: https://wittja01.github.io/website
+  repo: jake-wittman/website
+  site: https://jake-wittman.github.io/website
 ---
 
 <!----

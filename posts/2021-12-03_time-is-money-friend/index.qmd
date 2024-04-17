@@ -5,16 +5,16 @@ description:
 author:
   - first_name: "Jake"
     last_name: "Wittman"
-    url: https://wittja01.github.io/website/
+    url: https://jake-wittman.github.io/website/
 date: 2021-12-03
 image: org_ah.jpg  # <---- UPDATE ME 
-citation_url: https://wittja01.github.io/website/time-is-money-friend 
-repository_url: https://github.com/wittja01/WoWAH
+citation_url: https://jake-wittman.github.io/website/time-is-money-friend 
+repository_url: https://github.com/jake-wittman/WoWAH
 params:
   slug: time-is-money-friend
   date: 2021-12-03
-  repo: wittja01/WoWAH
-  site: https://wittja01.github.io/website
+  repo: jake-wittman/WoWAH
+  site: https://jake-wittman.github.io/website
 ---
 
 <!----

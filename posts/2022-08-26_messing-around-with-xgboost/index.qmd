@@ -4,17 +4,17 @@ description:
   I've been reading about XGBoost and wanted to take it for a ride # <---- UPDATE ME
 author:
   - name: "Jake Wittman"
-    url: https://wittja01.github.io/website/
+    url: https://jake-wittman.github.io/website/
 date: 2022-08-26
 image: preview.jpg  # <---- UPDATE ME 
 license: CC BY
-repository_url: https://github.com/wittja01/website
+repository_url: https://github.com/jake-wittman/website
 categories: machine learning, workthrough
 params:
   slug: messing-around-with-xgboost
   date: 2022-08-26
-  repo: wittja01/website
-  site: https://wittja01.github.io/website
+  repo: jake-wittman/website
+  site: https://jake-wittman.github.io/website
 draft: false
 ---
 

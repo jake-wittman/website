@@ -6,16 +6,16 @@ description:
   consectetur, adipisci velit # <---- UPDATE ME
 author:
   - Jake Wittman
-    url: https://wittja01.github.io/website/
+    url: https://jake-wittman.github.io/website/
 date: INSERT-DATE-HERE
 image: preview-image.jpg  # <---- UPDATE ME 
 license: CC BY
-repository_url: https://github.com/wittja01/website
+repository_url: https://github.com/jake-wittman/website
 params:
   slug: INSERT-SLUG-HERE
   date: INSERT-DATE-HERE
-  repo: wittja01/website
-  site: https://wittja01.github.io/website
+  repo: jake-wittman/website
+  site: https://jake-wittman.github.io/website
 citation: true
 ---
 

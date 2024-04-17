@@ -5,17 +5,17 @@ description:
 author:
   - first_name: "Jake"
     last_name: "Wittman"
-    url: https://wittja01.github.io/website/
+    url: https://jake-wittman.github.io/website/
 date: 2022-01-19
 image: app_preview.jpg  # <---- UPDATE ME 
 license: CC BY
-citation_url: https://wittja01.github.io/website/wow-ah-pt1 
-repository_url: https://github.com/wittja01/website
+citation_url: https://jake-wittman.github.io/website/wow-ah-pt1 
+repository_url: https://github.com/jake-wittman/website
 params:
   slug: wow-ah-pt1
   date: 2022-01-19
-  repo: wittja01/website
-  site: https://wittja01.github.io/website
+  repo: jake-wittman/website
+  site: https://jake-wittman.github.io/website
 ---
 
 <!----
@@ -46,7 +46,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 <!--------------- post ----------------->
 
-In [this post](https://wittja01.github.io/website/posts/2021-12-03_time-is-money-friend/) I described how I wrote some Python and R code to scrape the WoW auction house API to get auction data. The code felt kind of fragile though. Changes in one part of the script would cause more cascades through the code than I was comfortable with (maybe it's because of my programming skills moreso than trying to combine two languages), so I wanted to rewrite into one language to try and avoid that. I decided on Python because I wanted to get more comfortable using it, and using Pandas, so I rewrote the whole process of downloading the data, cleaning it, and building the database in Python. I'll walk through that code here, and then in a future post I'll talk about the R Shiny app I built using this data.
+In [this post](https://jake-wittman.github.io/website/posts/2021-12-03_time-is-money-friend/) I described how I wrote some Python and R code to scrape the WoW auction house API to get auction data. The code felt kind of fragile though. Changes in one part of the script would cause more cascades through the code than I was comfortable with (maybe it's because of my programming skills moreso than trying to combine two languages), so I wanted to rewrite into one language to try and avoid that. I decided on Python because I wanted to get more comfortable using it, and using Pandas, so I rewrote the whole process of downloading the data, cleaning it, and building the database in Python. I'll walk through that code here, and then in a future post I'll talk about the R Shiny app I built using this data.
 
 The first of my scripts pulls the auction house data from the Blizzard API hourly. I use a config file to store my API keys for both the dropbox API and Blizzard API. I wrote a couple functions to pull the data from the Blizzard API using information specific to the server I play on. You could repurpose this code for your own server, but you'd need to update the `id` variable for your server.
 

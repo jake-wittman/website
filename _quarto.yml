@@ -9,7 +9,7 @@ name: "personal_website2"
 description: |
   This is my website
 
-base_url: https://wittja01.github.io/website/
+base_url: https://jake-wittman.github.io/website/
 website:
    title: "Jake Wittman"
    navbar:
@@ -23,6 +23,6 @@ website:
           - text: 'CV'
             href: cv.html
           - text: 'GitHub'
-            href: https://github.com/wittja01
+            href: https://github.com/jake-wittman
 execute:
   freeze: auto
